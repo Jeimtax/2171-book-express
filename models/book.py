@@ -8,9 +8,12 @@ class Book:
         self.categories: list[Category] = []
     
     def add_category(self, category: Category):
-        if any(c.name == category.name for c in self.categories):
-            raise ValueError(f"{category.name} is already assigned to this book")
+        if any(c.grade_level == category.grade_level and c.subject == category.subject for c in self.categories):
+            raise ValueError(f"{category} is already assigned to this book")
         self.categories.append(category)
+    
+    def remove_category(self, category):
+        self.categories = [c for c in self.categories if str(c) != str(category)]
     
     def __str__(self):
         return f"{self.title}, {self.author}, {self.categories}"
