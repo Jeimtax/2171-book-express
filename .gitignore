@@ -1,3 +1,20 @@
 # Python
 __pycache__/
 *.py[cod]
+
+#virtual environment
+.venv/
+venv/
+env/
+
+# dotenv
+.env
+
+# PyChrm
+.idea
+
+# VS Code
+.vscode
+
+# test cases
+test_cases/
