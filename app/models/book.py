@@ -1,23 +1,35 @@
-from . import db
+from app import db
 
 class Book (db.Model):
+    __tablename__ = "Books"
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(80), unique=True, nullable=False)
+    title = db.Column(db.String(80), nullable=False)
     author = db.Column(db.String(80), nullable=False)
-    isbn = db.Column(db.Integer, unique=True, nullable=False)
-    grade = db.Column(db.String(80), nullable=False)
-    subject = db.Column(db.String(80), nullable=False)
     price = db.Column(db.Float, nullable=False)
-    stock = db.Column(db.Integer, nullable=False)
+    condition = db.Column(db.String(80), nullable=False)
+    grade = db.Column(db.String(80))
+    subject = db.Column(db.String(80))
+    
 
-    def __init__(self, title: str, author: str, isbn: int, grade: str, subject: str, price: float, stock: int):
+    def __init__(self, title, author, price, condition, grade=None, subject=None):
         self.title = title
         self.author = author
-        self.isbn = isbn
+        self.price = price
+        self.condition = condition
         self.grade = grade
         self.subject = subject
-        self.price = price
-        self.stock = stock
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'author': self.author,
+            'grade': self.grade,
+            'subject': self.subject,
+            'price': self.price,
+            'condition': self.condtion,
+            'quantity': self.quantity
+        }
         
     
 
