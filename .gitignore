@@ -18,3 +18,10 @@ env/
 
 # test cases
 test_cases/
+
+# Database
+*.db
+instance/
+
+# Uploads (user-generated files)
+uploads/
