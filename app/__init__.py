@@ -5,16 +5,19 @@ from flask_migrate import Migrate
 
 
 app = Flask(__name__)
-app.config.from_object(Config) 
+app.config.from_object(Config)
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-from app.models import book
+# Import all models so Alembic can detect them
+from app.models.book import Book
+from app.models.Importsalesdata import Sales
+from app.models.inventory_adjustment import InventoryAdjustment
+
 # Register blueprints
 from app.routes import upload_bp
+from app.inventory_routes import inventory_bp
+
 app.register_blueprint(upload_bp)
-
-
-
-
+app.register_blueprint(inventory_bp)
