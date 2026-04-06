@@ -16,7 +16,7 @@ from app.models.Importsalesdata import Sales
 from app.models.inventory_adjustment import InventoryAdjustment
 
 # Register blueprints
-from app.routes import upload_bp
+from app.csv_routes import upload_bp
 from app.inventory_routes import inventory_bp
 
 app.register_blueprint(upload_bp)

@@ -1,11 +1,16 @@
 import os
 import secrets
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 from werkzeug.utils import secure_filename
 from app import db, app
 from app.models.Importsalesdata import Sales, ImportSalesData
 
 upload_bp = Blueprint('upload', __name__, url_prefix='/upload')
+
+@app.route('/')
+def index():
+    """Serve CSV upload form"""
+    return render_template('upload.html')
 
 
 def allowed_file(filename):
@@ -136,3 +141,30 @@ def get_sales_stats():
     
     except Exception as e:
         return jsonify({'error': f'Failed to retrieve stats: {str(e)}'}), 500
+
+@app.route('/api')
+def api_info():
+    """API information endpoint"""
+    return {
+        'status': 'ok',
+        'message': 'Book Express API is running',
+        'endpoints': {
+            'upload_csv': 'POST /upload/csv',
+            'get_sales': 'GET /upload/sales',
+            'get_sales_stats': 'GET /upload/sales/stats',
+            'get_single_sale': 'GET /upload/sales/<id>',
+            'delete_sale': 'DELETE /upload/sales/<id>'
+        }
+    }, 200
+
+
+@app.errorhandler(404)
+def not_found(error):
+    """Handle 404 errors"""
+    return {'error': 'Endpoint not found'}, 404
+
+
+@app.errorhandler(500)
+def server_error(error):
+    """Handle 500 errors"""
+    return {'error': 'Internal server error'}, 500
