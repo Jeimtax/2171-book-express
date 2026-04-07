@@ -66,4 +66,11 @@ class InventoryManager:
         results = query.order_by(Book.title.asc()).all()
         return results
     
+    def low_stock_alert(self):
+        all_books = Book.query.all()
+        for book in all_books:
+            if book.stock <= 1:
+                message = f" Running low on book: id# {book.id}"
+        return message
+    
     

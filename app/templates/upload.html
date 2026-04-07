@@ -1,15 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Book Express - CSV Upload</title>
-</head>
-<body>
+{% extends "base.html"%}
+{% block main %}
     <h1>Book Express - CSV Upload</h1>
     <form action="/upload/csv" enctype="multipart/form-data" method="POST">
         <label for="csv">Select CSV file:</label><br><br>
         <input type="file" name="csv" id="csv" accept=".csv" required>
         <input type="submit" value="Upload">
     </form>
-</body>
-</html>
+{% endblock%}

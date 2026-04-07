@@ -3,10 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Express</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <title>Flask App</title>
 </head>
 <body>
 
-    
+<div class="d-flex">
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-primary vh-100 sticky-top" style="width: 250px;">
+        <a href="/" class="text-white text-decoration-none">
+            <span class="fs-4">Book Express</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a href="{{ url_for('index') }}" class="nav-link text-white">Home</a>
+            </li>
+            <li>
+                <a href="" class="nav-link text-white">Inventory</a>
+            </li>
+            <li>
+                <a href="" class="nav-link text-white">Listings</a>
+            </li>
+            <li>
+                <a href="" class="nav-link text-white">Listings</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="p-4 w-100">
+        {% block main %}{% endblock %}
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 </body>
 </html>
