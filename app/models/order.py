@@ -12,6 +12,7 @@ class Order(db.Model):
     title = db.Column(db.String(120), nullable=False)
     author = db.Column(db.String(120), nullable=False)
     quantity = db.Column(db.Integer, nullable=False, default=1)
+    status = db.Column(db.String(20), nullable=False, default='pending')  # 'pending' | 'delivered'
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     supplier = db.relationship('Supplier', back_populates='orders')
@@ -27,11 +28,13 @@ class Order(db.Model):
             'title': self.title,
             'author': self.author,
             'quantity': self.quantity,
+            'status': self.status,
             'created_at': self.created_at.isoformat()
         }
 
     def __repr__(self):
         return (
             f'<Order {self.id} supplier_id={self.supplier_id} '
-            f'book_id={self.book_id} title={self.title!r} quantity={self.quantity}>'
+            f'book_id={self.book_id} title={self.title!r} '
+            f'quantity={self.quantity} status={self.status}>'
         )
