@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Express – Manage Orders</title>
+    <title>Book Express - Manage Orders</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -49,13 +49,17 @@
             font-weight: 600;
         }
 
-        input[type="text"], textarea {
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
             width: 100%;
             padding: 0.85rem;
             border: 1px solid #cbd5e1;
             border-radius: 8px;
             font-size: 0.95rem;
             background: #f9fafb;
+            box-sizing: border-box;
         }
 
         textarea {
@@ -77,6 +81,12 @@
             color: #047857;
             margin-bottom: 1rem;
             font-weight: 600;
+        }
+
+        .field-error {
+            color: #b91c1c;
+            font-size: 0.9rem;
+            margin-top: 0.35rem;
         }
 
         .order-item {
@@ -136,10 +146,16 @@
                     <div>
                         <label for="supplier_name">Supplier Name</label>
                         {{ form.supplier_name(id='supplier_name') }}
+                        {% for error in form.supplier_name.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
                     </div>
                     <div>
                         <label for="supplier_phone">Phone Number</label>
                         {{ form.supplier_phone(id='supplier_phone') }}
+                        {% for error in form.supplier_phone.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
                     </div>
                 </div>
 
@@ -147,13 +163,43 @@
                     <div>
                         <label for="supplier_address">Supplier Address</label>
                         {{ form.supplier_address(id='supplier_address') }}
+                        {% for error in form.supplier_address.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div>
-                        <label for="items">Items Ordered</label>
-                        {{ form.items(id='items') }}
+                        <label for="book_id">Linked Book</label>
+                        {{ form.book_id(id='book_id') }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label for="title">Book Title</label>
+                        {{ form.title(id='title') }}
+                        {% for error in form.title.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div>
+                        <label for="author">Book Author</label>
+                        {{ form.author(id='author') }}
+                        {% for error in form.author.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label for="quantity">Quantity</label>
+                        {{ form.quantity(id='quantity') }}
+                        {% for error in form.quantity.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
                     </div>
                 </div>
 
@@ -176,8 +222,12 @@
                             <strong>Address:</strong> {{ order.supplier.address }}
                         </div>
                         <div class="items-info">
-                            <strong>Items Ordered:</strong><br>
-                            {{ order.items | replace('\n', '<br>') | safe }}
+                            {% if order.book %}
+                                <strong>Linked Book:</strong> {{ order.book.title }} by {{ order.book.author }}<br>
+                            {% endif %}
+                            <strong>Title:</strong> {{ order.title }}<br>
+                            <strong>Author:</strong> {{ order.author }}<br>
+                            <strong>Quantity:</strong> {{ order.quantity }}
                         </div>
                     </div>
                 {% endfor %}

@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SubmitField
-from wtforms.validators import DataRequired, Length
+from wtforms import IntegerField, SelectField, StringField, SubmitField, TextAreaField
+from wtforms.validators import DataRequired, Length, NumberRange
+from app.models.book import Book
 
 
 class ManageOrderForm(FlaskForm):
@@ -19,8 +20,29 @@ class ManageOrderForm(FlaskForm):
         'Supplier Address',
         validators=[DataRequired(), Length(max=255)]
     )
-    items = TextAreaField(
-        'Items Ordered',
-        validators=[DataRequired(), Length(max=1000)]
+    book_id = SelectField(
+        'Book (optional)',
+        coerce=int,
+        validators=[]
+    )
+    title = StringField(
+        'Book Title',
+        validators=[DataRequired(), Length(max=120)]
+    )
+    author = StringField(
+        'Book Author',
+        validators=[DataRequired(), Length(max=120)]
+    )
+    quantity = IntegerField(
+        'Quantity',
+        validators=[DataRequired(), NumberRange(min=1)]
     )
     submit = SubmitField('Create Order')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        books = Book.query.order_by(Book.title.asc()).all()
+        self.book_id.choices = [(0, '-- Select Book (optional) --')] + [
+            (book.id, f'{book.title} by {book.author}')
+            for book in books
+        ]

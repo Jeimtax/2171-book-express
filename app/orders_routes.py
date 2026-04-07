@@ -23,7 +23,15 @@ def manage_orders():
 
         order = Order(
             supplier_id=supplier.id,
-            items=form.items.data.strip(),
+            book_id=form.book_id.data if form.book_id.data != 0 else None,
+            items=(
+                f"Title: {form.title.data.strip()}\n"
+                f"Author: {form.author.data.strip()}\n"
+                f"Quantity: {form.quantity.data}"
+            ),
+            title=form.title.data.strip(),
+            author=form.author.data.strip(),
+            quantity=form.quantity.data,
         )
         db.session.add(order)
         db.session.commit()
