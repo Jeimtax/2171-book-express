@@ -4,10 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
-    <title>Flask App</title>
+    <link rel="stylesheet" href="/static/css/app.css">
+    <title>Book Express</title>
 </head>
 <body>
-
+    
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 <div class="d-flex">
     <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-primary vh-100 sticky-top" style="width: 250px;">
         <a href="/" class="text-white text-decoration-none">
@@ -16,19 +27,21 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a href="{{ url_for('index') }}" class="nav-link text-white">Home</a>
+                <a href="" class="nav-link text-white">Dashboard</a>
             </li>
             <li>
-                <a href="" class="nav-link text-white">Inventory</a>
+                <a href="{{ url_for('books.create')}}" class="nav-link text-white">Inventory</a>
             </li>
             <li>
-                <a href="" class="nav-link text-white">Listings</a>
+                <a href="{{ url_for('index') }}" class="nav-link text-white">Import CSV</a>
             </li>
             <li>
-                <a href="" class="nav-link text-white">Listings</a>
+                <a href="{{ url_for('inventory.adjust_page')}}" class="nav-link text-white">Adjust Inventory</a>
             </li>
         </ul>
     </div>
+
+    
 
     <div class="p-4 w-100">
         {% block main %}{% endblock %}

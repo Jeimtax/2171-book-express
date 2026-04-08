@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+        
+<button type="button" class="btn btn-success mb-4" data-bs-toggle="modal" data-bs-target="#addItemModal">+ Add New Book</button>  
+
+
+<div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="addItemModalLabel">Add New Entry</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{{ url_for('books.create') }}" method="POST">
+            <div class="modal-body ">
+                <div class="mb-3 propertyform">
+                    {{form.csrf_token}}
+                    {% for field in [form.title, form.author, form.price, form.condition, form.grade, form.subject, form.quantity] %}
+                    {{field.label(style="font-weight:500")}}
+                    {{field()}}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            {{form.submit}}
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+<div class="row mt-5">
+    <h3>Book Inventory</h3>
+    <hr>
+    {% for book in all_books %}
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm border-primary">
+            <div class="card-body">
+                <h5 class="card-title">{{ book.title }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">by {{ book.author }}</h6>
+                <ul class="list-group list-group-flush small">
+                    <li class="list-group-item">Price: ${{ "%.2f"|format(book.price) }}</li>
+                    <li class="list-group-item">Quantity: {{ book.grade }}</li>
+                    <li class="list-group-item">Subject: {{ book.subject }}</li>
+                    <li class="list-group-item">Condition: {{ book.condition }}</li>
+                    <li class="list-group-item">Quantity: {{ book.quantity }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info">No books found in the inventory.</div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
