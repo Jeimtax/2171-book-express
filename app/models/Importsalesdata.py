@@ -2,13 +2,17 @@ import csv
 import os
 from datetime import datetime
 from app import db
+from app.models.book import Book
 
 
 class Sales(db.Model):
     __tablename__ = "Sales"
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    product_id = db.Column(db.Integer, nullable=False)
+
+    product_id = db.Column(db.Integer, db.ForeignKey('Books.id'), nullable=False)
+    product = db.relationship('Book', backref = 'sales')
+
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -75,6 +79,22 @@ class ImportSalesData:
         
         try:
             for data in sales_data:
+                
+                #Find book
+                book = Book.query.get(data['product_id'])
+
+                if not book:
+                    raise ValueError(f"Book with ID {data['product_id']} not found")
+                
+                if book.quantity < data ['quantity']:
+                    raise ValueError(
+                        f"Not enough stock for Book ID {data['product_id']}"
+                    )
+                
+                #deducts book inventory
+                book.quantity -= data['quantity']
+
+                #creates sales record
                 sale = Sales(
                     date=data['date'],
                     product_id=data['product_id'],
