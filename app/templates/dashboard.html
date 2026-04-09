@@ -1,13 +1,6 @@
 {% extends "base.html" %}
 
 {% block main %}
-<div class="container mt-5">
-    <div class="jumbotron shadow-sm p-5 mb-4 bg-light rounded">
-        <h1 class="display-4">Welcome, {{ user.username }}!</h1>
-        <p class="lead">Logged in as: <strong>{{ user.role|capitalize }}</strong></p>
-        <hr class="my-4">
-        <p>Use the sidebar to navigate through the Book Express management system.</p>
-        <a class="btn btn-danger btn-lg" href="{{ url_for('auth.logout') }}" role="button">Logout</a>
-    </div>
-</div>
+
+
 {% endblock %}
