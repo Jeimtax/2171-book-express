@@ -27,7 +27,7 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a href="" class="nav-link text-white">Dashboard</a>
+                <a href="{{ url_for('auth.dashboard') }}" class="nav-link text-white">Dashboard</a>
             </li>
             <li>
                 <a href="{{ url_for('books.create')}}" class="nav-link text-white">Inventory</a>
