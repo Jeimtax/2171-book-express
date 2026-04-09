@@ -4,13 +4,13 @@ from flask import Blueprint, request, jsonify, render_template
 from werkzeug.utils import secure_filename
 from app import db, app
 from app.models.Importsalesdata import Sales, ImportSalesData
+from flask import redirect, url_for
 
 upload_bp = Blueprint('upload', __name__, url_prefix='/upload')
 
-@app.route('/')
-def index():
-    """Serve CSV upload form"""
-    return render_template('upload.html')
+@app.route('/') #handles in app/__init__.py or another main entry point
+def home_redirect():
+    return redirect(url_for('auth.login')) #redirects to the login page
 
 
 def allowed_file(filename):
