@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, SelectField, StringField, SubmitField, TextAreaField
+from wtforms import IntegerField, SelectField, StringField, SubmitField, TextAreaField, PasswordField
 from wtforms.validators import DataRequired, Length, NumberRange
 from app.models.book import Book
 
@@ -34,4 +34,8 @@ class ManageOrderForm(FlaskForm):
             for book in books
         ]
 
-
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=80)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
+    role = SelectField('Role', choices=[('staff', 'Staff'), ('manager', 'Manager')], default='staff', validators=[DataRequired()])
+    submit = SubmitField('Register')
