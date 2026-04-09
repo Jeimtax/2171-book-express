@@ -12,8 +12,18 @@ orders_bp = Blueprint('orders', __name__)
 def manage_orders():
     form = ManageOrderForm()
     message = None
+    book_id_error = None
 
     if request.method == 'POST' and form.validate_on_submit():
+        raw_book_id = (form.book_id.data or '').strip()
+        linked_book = None
+
+        if raw_book_id:
+            if raw_book_id.isdigit():
+                linked_book = Book.query.get(int(raw_book_id))
+            if not linked_book:
+                book_id_error = 'ID not found'
+
         supplier = Supplier(
             name=form.supplier_name.data.strip(),
             phone=form.supplier_phone.data.strip(),
@@ -24,7 +34,7 @@ def manage_orders():
 
         order = Order(
             supplier_id=supplier.id,
-            book_id=form.book_id.data if form.book_id.data != 0 else None,
+            book_id=linked_book.id if linked_book else None,
             items=(
                 f"Title: {form.title.data.strip()}\n"
                 f"Author: {form.author.data.strip()}\n"
@@ -41,7 +51,13 @@ def manage_orders():
         form = ManageOrderForm()
 
     orders = Order.query.order_by(Order.created_at.desc()).all()
-    return render_template('manage_orders.html', form=form, orders=orders, message=message)
+    return render_template(
+        'manage_orders.html',
+        form=form,
+        orders=orders,
+        message=message,
+        book_id_error=book_id_error,
+    )
 
 
 @orders_bp.route('/orders/<int:order_id>/confirm-delivery', methods=['POST'])

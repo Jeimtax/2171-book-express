@@ -230,8 +230,14 @@
 
                 <div class="form-row">
                     <div>
-                        <label for="book_id">Linked Book</label>
+                        <label for="book_id">Book ID (optional)</label>
                         {{ form.book_id(id='book_id') }}
+                        {% if book_id_error %}
+                            <div class="field-error">{{ book_id_error }}</div>
+                        {% endif %}
+                        {% for error in form.book_id.errors %}
+                            <div class="field-error">{{ error }}</div>
+                        {% endfor %}
                     </div>
                 </div>
 
@@ -300,8 +306,9 @@
                         </div>
 
                         <div class="items-info">
+                            <strong>Book ID:</strong> {{ order.book_id if order.book_id else 'Not linked' }}<br>
                             {% if order.book %}
-                                <strong>Linked Book:</strong> {{ order.book.title }} by {{ order.book.author }}<br>
+                                <strong>Matched Book:</strong> {{ order.book.title }} by {{ order.book.author }}<br>
                             {% endif %}
                             <strong>Title:</strong> {{ order.title }}<br>
                             <strong>Author:</strong> {{ order.author }}<br>

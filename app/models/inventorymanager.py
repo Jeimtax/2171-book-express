@@ -38,20 +38,20 @@ class InventoryManager:
         db.session.commit()
         return book
 
-    def search_books(self, title=None, author=None, grade=None, subject=None, max_price=None):
+    def search_books(self, title=None, author=None, grade=None, subject=None, max_price=None, quantity=None):
         query = Book.query
 
         if title:
-            query = query.filter(Book.title == title)
+            query = query.filter(Book.title.ilike(f"%{title.strip()}%"))
 
         if author:
-            query = query.filter(Book.author == author)
+            query = query.filter(Book.author.ilike(f"%{author.strip()}%"))
 
         if grade:
-            query = query.filter(Book.grade == grade)
+            query = query.filter(Book.grade.ilike(grade.strip()))
 
         if subject:
-            query = query.filter(Book.subject == subject)
+            query = query.filter(Book.subject.ilike(subject.strip()))
 
         if max_price is not None and max_price != "":
             try:
@@ -59,18 +59,33 @@ class InventoryManager:
                 query = query.filter(Book.price <= price_value)
             except ValueError:
                 pass
-
-
+        
+        if quantity is not None and quantity != "":
+            try:
+                quantity_value = int(quantity)
+                query = query.filter(Book.quantity == quantity_value)
+            except ValueError:
+                pass
 
         # Real-time inventory levels come directly from the live DB
         results = query.order_by(Book.title.asc()).all()
         return results
     
-    def low_stock_alert(self):
-        all_books = Book.query.all()
-        for book in all_books:
-            if book.stock <= 1:
-                message = f" Running low on book: id# {book.id}"
-        return message
+    def low_stock_alert(self, threshold=1):
+        """Return all books whose quantity is at or below the alert threshold."""
+        try:
+            threshold_value = int(threshold)
+        except (TypeError, ValueError):
+            threshold_value = 1
+
+        if threshold_value < 0:
+            threshold_value = 0
+
+        return (
+            Book.query
+            .filter(Book.quantity <= threshold_value)
+            .order_by(Book.quantity.asc(), Book.title.asc())
+            .all()
+        )
     
     
