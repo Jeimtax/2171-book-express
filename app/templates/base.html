@@ -14,7 +14,7 @@
     {% for category, message in messages %}
       <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
         {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     {% endfor %}
   {% endif %}
@@ -37,6 +37,9 @@
             </li>
             <li>
                 <a href="{{ url_for('inventory.adjust_page')}}" class="nav-link text-white">Adjust Inventory</a>
+            </li>
+            <li>
+                <a href="{{ url_for('auth.change_password') }}" class="nav-link text-white">Change Password</a>
             </li>
         </ul>
     </div>
