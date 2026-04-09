@@ -33,8 +33,10 @@ from app.routes.books_routes import books_bp
 from app.routes.csv_routes import upload_bp
 from app.routes.inventory_routes import inventory_bp
 from app.routes.orders_routes import orders_bp
+from app.routes.auth_routes import auth_bp # Import the new auth blueprint
 
 app.register_blueprint(books_bp)
 app.register_blueprint(upload_bp)
 app.register_blueprint(inventory_bp)
 app.register_blueprint(orders_bp)
+app.register_blueprint(auth_bp) # Register the new auth blueprint
