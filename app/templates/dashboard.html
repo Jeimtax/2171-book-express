@@ -2,5 +2,61 @@
 
 {% block main %}
 
+<style>
+    .dashboard-container {
+        padding: 20px;
+    }
+
+    .card {
+        background: white;
+        padding: 20px;
+        margin: 10px;
+        border-radius: 10px;
+        display: inline-block;
+        width: 220px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .low-stock {
+        margin-top: 30px;
+        padding: 20px;
+        background: #fff3cd;
+        border-radius: 10px;
+    }
+</style>
+
+<div class="dashboard-container">
+    <h1>Dashboard</h1>
+
+    <div class="card">
+        <h3>Total Books</h3>
+        <p id="totalBooks">Loading...</p>
+    </div>
+
+    <div class="card">
+        <h3>Total Value</h3>
+        <p id="totalValue">Loading...</p>
+    </div>
+
+    <div class="low-stock">
+        <h3>⚠ Low Stock</h3>
+        <ul id="lowStockList">
+            <li>Loading...</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+fetch('/api/dashboard')
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('totalBooks').innerText = data.total_books;
+        document.getElementById('totalValue').innerText = "$" + data.total_value.toFixed(2);
+        })
+    
+    .catch(err => {
+        console.error(err);
+    });
+</script>
 
 {% endblock %}
