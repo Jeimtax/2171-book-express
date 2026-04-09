@@ -25,7 +25,7 @@ def role_required(role):
 def register():
     if current_user.is_authenticated:
         flash('You are already logged in.', 'info')
-        return redirect(url_for('books_bp.index')) # Redirect to your main index route
+        return redirect(url_for('books.index')) # Redirect to your main index route
 
     if request.method == 'POST':
         username = request.form['username']
@@ -55,7 +55,7 @@ def register():
 def login():
     if current_user.is_authenticated:
         flash('You are already logged in.', 'info')
-        return redirect(url_for('books_bp.index')) # Redirect to your main index route
+        return redirect(url_for('books.index')) # Redirect to your main index route
 
     if request.method == 'POST':
         username = request.form['username']
@@ -68,7 +68,7 @@ def login():
             login_user(user, remember=remember)
             flash(f'Logged in as {user.username}!', 'success')
             next_page = request.args.get('next')
-            return redirect(next_page or url_for('books_bp.index')) # Redirect to next page or main index
+            return redirect(next_page or url_for('books.index')) # Redirect to next page or main index
         else:
             flash('Login failed. Check your username and password.', 'danger')
 

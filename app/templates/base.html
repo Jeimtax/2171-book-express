@@ -27,13 +27,13 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a href="" class="nav-link text-white">Dashboard</a>
+                <a href="{{ url_for('auth.dashboard') }}" class="nav-link text-white">Dashboard</a>
             </li>
             <li>
                 <a href="{{ url_for('books.create')}}" class="nav-link text-white">Inventory</a>
             </li>
             <li>
-                <a href="{{ url_for('index') }}" class="nav-link text-white">Import CSV</a>
+                <a href="{{ url_for('upload.upload_page') }}" class="nav-link text-white">Import CSV</a>
             </li>
             <li>
                 <a href="{{ url_for('inventory.adjust_page')}}" class="nav-link text-white">Adjust Inventory</a>

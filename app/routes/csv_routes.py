@@ -8,6 +8,11 @@ from flask import redirect, url_for
 
 upload_bp = Blueprint('upload', __name__, url_prefix='/upload')
 
+@upload_bp.route('/')
+def upload_page():
+    """Serve CSV upload form"""
+    return render_template('upload.html')
+
 @app.route('/') #handles in app/__init__.py or another main entry point
 def home_redirect():
     return redirect(url_for('auth.login')) #redirects to the login page
