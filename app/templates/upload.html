@@ -1,5 +1,6 @@
 {% extends "base.html"%}
 {% block main %}
+<<<<<<< Updated upstream
     <h1>Book Express - CSV Upload</h1>
     <form action="/upload/csv" enctype="multipart/form-data" method="POST">
         <label for="csv">Select CSV file:</label><br><br>
@@ -7,3 +8,206 @@
         <input type="submit" value="Upload">
     </form>
 {% endblock%}
+=======
+<style>
+    .upload-grid {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 1.5rem;
+        align-items: start;
+    }
+
+    @media (max-width: 800px) { .upload-grid { grid-template-columns: 1fr; } }
+
+    .upload-zone {
+        background: var(--ink2);
+        border: 1px solid var(--border);
+        padding: 3rem 2rem;
+        text-align: center;
+        position: relative;
+        transition: border-color .2s;
+    }
+
+    .upload-zone:focus-within { border-color: var(--gold); }
+
+    .upload-icon {
+        width: 48px;
+        height: 48px;
+        border: 1px solid rgba(200,151,58,0.3);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.25rem;
+    }
+
+    .upload-icon svg { width: 22px; height: 22px; stroke: var(--gold); fill: none; stroke-width: 1.5; }
+
+    .upload-heading {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.25rem;
+        font-weight: 400;
+        color: var(--cream);
+        margin-bottom: .4rem;
+    }
+
+    .upload-sub { font-size: .825rem; color: var(--muted); margin-bottom: 1.75rem; }
+
+    .file-input-wrap { position: relative; display: inline-block; }
+
+    #csvFile {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .file-label {
+        display: inline-block;
+        padding: .7rem 1.5rem;
+        background: var(--ink);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        font-family: 'DM Sans', sans-serif;
+        font-size: .78rem;
+        font-weight: 400;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: border-color .2s, color .2s;
+        white-space: nowrap;
+        max-width: 260px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .file-label:hover { border-color: rgba(200,151,58,0.4); color: var(--cream); }
+    .file-label.selected { color: var(--gold); border-color: rgba(200,151,58,0.4); }
+
+    .submit-bar {
+        margin-top: 1.5rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    /* Spec card */
+    .spec-card {
+        background: var(--ink2);
+        border: 1px solid var(--border);
+        padding: 1.75rem;
+    }
+
+    .spec-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1rem;
+        font-weight: 400;
+        color: var(--cream);
+        margin-bottom: 1.25rem;
+    }
+
+    .spec-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: .6rem 0;
+        border-bottom: 1px solid var(--border2);
+        font-size: .78rem;
+    }
+
+    .spec-row:last-child { border-bottom: none; }
+    .spec-key { color: var(--muted); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 500; }
+    .spec-val { font-family: 'DM Sans', monospace; color: var(--gold); font-size: .78rem; }
+
+    .format-note {
+        margin-top: 1.5rem;
+        padding: 1rem 1.25rem;
+        background: rgba(200,151,58,0.05);
+        border-left: 2px solid rgba(200,151,58,0.3);
+    }
+
+    .format-note p { font-size: .775rem; color: var(--muted); line-height: 1.6; }
+    .format-note code { font-size: .72rem; color: var(--gold); background: rgba(200,151,58,0.08); padding: .1rem .3rem; }
+</style>
+
+<div class="page-header">
+    <div>
+        <div class="page-eyebrow">Operations</div>
+        <div class="page-title">Import Sales</div>
+        <div class="page-sub">Upload a CSV file to record sales and automatically deduct inventory.</div>
+    </div>
+</div>
+
+<div class="upload-grid">
+    <div class="upload-zone">
+        <div class="upload-icon">
+            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+        </div>
+        <div class="upload-heading">Select CSV File</div>
+        <div class="upload-sub">Choose a file from your computer to import sales data.</div>
+
+        <form action="/upload/csv" enctype="multipart/form-data" method="POST" id="uploadForm">
+            <div class="file-input-wrap">
+                <input type="file" name="csv" id="csvFile" accept=".csv" required>
+                <div class="file-label" id="fileLabel">Browse files...</div>
+            </div>
+            <div class="submit-bar">
+                <button type="submit" class="btn-primary-dark">Import Records</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="spec-card">
+        <div class="spec-title">CSV Requirements</div>
+        <div class="spec-row">
+            <span class="spec-key">Column 1</span>
+            <span class="spec-val">date</span>
+        </div>
+        <div class="spec-row">
+            <span class="spec-key">Column 2</span>
+            <span class="spec-val">product_id</span>
+        </div>
+        <div class="spec-row">
+            <span class="spec-key">Column 3</span>
+            <span class="spec-val">quantity</span>
+        </div>
+        <div class="spec-row">
+            <span class="spec-key">Column 4</span>
+            <span class="spec-val">price</span>
+        </div>
+        <div class="spec-row">
+            <span class="spec-key">Date Format</span>
+            <span class="spec-val">YYYY-MM-DD</span>
+        </div>
+        <div class="spec-row">
+            <span class="spec-key">Max Size</span>
+            <span class="spec-val">16 MB</span>
+        </div>
+
+        <div class="format-note">
+            <p>Example row:<br>
+            <code>2026-04-09,42,3,18.50</code><br><br>
+            The system will auto-deduct the sold quantity from each book's stock level on import.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const fileInput = document.getElementById('csvFile');
+    const fileLabel = document.getElementById('fileLabel');
+
+    fileInput.addEventListener('change', function () {
+        if (this.files && this.files[0]) {
+            fileLabel.textContent = this.files[0].name;
+            fileLabel.classList.add('selected');
+        } else {
+            fileLabel.textContent = 'Browse files...';
+            fileLabel.classList.remove('selected');
+        }
+    });
+</script>
+{% endblock %}
+>>>>>>> Stashed changes

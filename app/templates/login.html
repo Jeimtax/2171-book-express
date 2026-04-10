@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — Book Express</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0e0e0e; --ink2: #1a1a1a; --cream: #f2ede6;
+            --muted: #8a8070; --gold: #c8973a; --gold2: #e8b84b;
+            --border: rgba(200,151,58,0.18);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--ink);
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        /* ── LEFT ─────────────────────────────── */
+        .left {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem;
+            background: var(--ink2);
+            position: relative;
+        }
+
+        .left::after {
+            content: '';
+            position: absolute;
+            right: 0; top: 10%; bottom: 10%;
+            width: 1px;
+            background: linear-gradient(to bottom, transparent, var(--gold) 30%, var(--gold) 70%, transparent);
+            opacity: .3;
+        }
+
+        .brand-mark {
+            font-size: .6rem;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 3rem;
+            display: block;
+            font-weight: 500;
+        }
+
+        .login-headline {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 400;
+            color: var(--cream);
+            line-height: 1.1;
+            margin-bottom: .5rem;
+        }
+
+        .login-sub {
+            font-size: .875rem;
+            color: var(--muted);
+            margin-bottom: 2.5rem;
+            font-weight: 300;
+        }
+
+        .field { margin-bottom: 1.25rem; }
+
+        .field label {
+            display: block;
+            font-size: .6rem;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: .5rem;
+            font-weight: 500;
+        }
+
+        .field input {
+            width: 100%;
+            padding: .85rem 1rem;
+            background: var(--ink);
+            border: 1px solid rgba(200,151,58,0.15);
+            color: var(--cream);
+            font-family: 'DM Sans', sans-serif;
+            font-size: .9rem;
+            font-weight: 300;
+            outline: none;
+            transition: border-color .2s;
+        }
+
+        .field input:focus { border-color: var(--gold); }
+        .field input::placeholder { color: #444; }
+
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            margin-bottom: 1.75rem;
+            font-size: .8rem;
+            color: var(--muted);
+            font-weight: 300;
+        }
+
+        .remember input[type="checkbox"] { accent-color: var(--gold); width: 14px; height: 14px; }
+
+        .btn-login {
+            width: 100%;
+            padding: .9rem;
+            background: var(--gold);
+            color: var(--ink);
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .8rem;
+            font-weight: 500;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background .2s;
+        }
+
+        .btn-login:hover { background: var(--gold2); }
+
+        .register-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: .8rem;
+            color: var(--muted);
+            font-weight: 300;
+        }
+
+        .register-link a {
+            color: var(--gold);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(200,151,58,0.3);
+            padding-bottom: 1px;
+            transition: border-color .2s;
+        }
+
+        .register-link a:hover { border-color: var(--gold); }
+
+        .flash-msg {
+            padding: .75rem 1rem;
+            font-size: .8rem;
+            border-left: 3px solid;
+            margin-bottom: 1.25rem;
+        }
+
+        .flash-msg.danger  { background: rgba(180,50,50,0.12); border-color: #b43232; color: #e07070; }
+        .flash-msg.success { background: rgba(200,151,58,0.1);  border-color: var(--gold); color: var(--gold2); }
+        .flash-msg.info    { background: rgba(100,140,180,0.1); border-color: #6490b0; color: #90b8d8; }
+        .flash-msg.warning { background: rgba(200,151,58,0.08); border-color: var(--gold); color: var(--gold); }
+
+        /* ── RIGHT ─────────────────────────────── */
+        .right { position: relative; overflow: hidden; }
+
+        .right img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
+            filter: brightness(.55) contrast(1.05);
+        }
+
+        .right-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            padding: 3rem;
+            background: linear-gradient(to top, rgba(14,14,14,.9) 0%, transparent 100%);
+        }
+
+        .right-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 400;
+            color: var(--cream);
+            line-height: 1.5;
+            opacity: .9;
+        }
+
+        .right-attr {
+            font-size: .72rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-top: .6rem;
+        }
+
+        @media (max-width: 768px) {
+            body { grid-template-columns: 1fr; }
+            .right { display: none; }
+            .left { padding: 2.5rem 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="left">
+        <span class="brand-mark">Book Express &mdash; Inventory System</span>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash-msg {{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="login-headline">Welcome<br>back.</div>
+        <div class="login-sub">Sign in to manage your inventory.</div>
+
+        <form method="POST" novalidate>
+            <div class="field">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="field">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <div class="remember">
+                <input type="checkbox" id="remember_me" name="remember_me">
+                <label for="remember_me" style="margin:0; text-transform:none; font-size:.8rem; color:var(--muted); font-weight:300;">Remember me for 1 hour</label>
+            </div>
+            <button type="submit" class="btn-login">Sign In</button>
+        </form>
+
+        <p class="register-link">No account? <a href="{{ url_for('auth.register') }}">Request access</a></p>
+    </div>
+
+    <div class="right">
+        <img src="{{ url_for('static', filename='images/pexels-matteobasilephoto-8464020.jpg') }}" alt="Bookstore">
+        <div class="right-overlay">
+            <div class="right-quote">"A room without books is like<br>a body without a soul."</div>
+            <div class="right-attr">Marcus Tullius Cicero</div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>

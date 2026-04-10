@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 {% extends "base.html" %}
 
 {% block main %}
@@ -60,3 +61,373 @@ fetch('/api/dashboard')
 </script>
 
 {% endblock %}
+=======
+{% extends "base.html" %}
+
+{% block main %}
+<style>
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1px;
+        background: var(--border);
+        border: 1px solid var(--border);
+        margin-bottom: 2.5rem;
+    }
+
+    .stat-cell {
+        background: var(--ink2);
+        padding: 1.75rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-cell::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0;
+        width: 2px; height: 40px;
+        background: var(--gold);
+        opacity: 0;
+        transition: opacity .3s, height .3s;
+    }
+
+    .stat-cell:hover::before { opacity: 1; height: 100%; }
+
+    .stat-eyebrow {
+        font-size: .58rem;
+        letter-spacing: .18em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: .6rem;
+        font-weight: 500;
+    }
+
+    .stat-value {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.2rem;
+        font-weight: 400;
+        color: var(--cream);
+        line-height: 1;
+        margin-bottom: .3rem;
+    }
+
+    .stat-change {
+        font-size: .7rem;
+        color: var(--muted);
+    }
+
+    /* ── Quick Search ────────────────────────── */
+    .search-bar-wrap {
+        margin-bottom: 2.5rem;
+        position: relative;
+    }
+
+    .search-bar {
+        width: 100%;
+        padding: 1rem 3.5rem 1rem 1.25rem;
+        background: var(--ink2);
+        border: 1px solid var(--border);
+        color: var(--cream);
+        font-family: 'DM Sans', sans-serif;
+        font-size: .9rem;
+        font-weight: 300;
+        outline: none;
+        transition: border-color .2s;
+    }
+
+    .search-bar:focus { border-color: var(--gold); }
+    .search-bar::placeholder { color: #555; }
+
+    .search-submit {
+        position: absolute;
+        right: 0; top: 0; bottom: 0;
+        padding: 0 1.25rem;
+        background: var(--gold);
+        border: none;
+        color: var(--ink);
+        font-family: 'DM Sans', sans-serif;
+        font-size: .72rem;
+        font-weight: 500;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background .2s;
+    }
+
+    .search-submit:hover { background: var(--gold2); }
+
+    /* ── Two-col layout ──────────────────────── */
+    .dash-grid {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 1.5rem;
+        align-items: start;
+    }
+
+    @media (max-width: 960px) { .dash-grid { grid-template-columns: 1fr; } }
+
+    /* ── Activity feed ───────────────────────── */
+    .activity-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.25rem;
+    }
+
+    .section-heading {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.1rem;
+        font-weight: 400;
+        color: var(--cream);
+    }
+
+    .activity-list { list-style: none; }
+
+    .activity-item {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--border2);
+        align-items: flex-start;
+    }
+
+    .activity-item:last-child { border-bottom: none; }
+
+    .activity-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--gold);
+        flex-shrink: 0;
+        margin-top: .45rem;
+    }
+
+    .activity-dot.muted { background: var(--muted); }
+
+    .activity-text {
+        font-size: .825rem;
+        color: #a09080;
+        line-height: 1.5;
+        flex: 1;
+    }
+
+    .activity-text strong { color: var(--cream); font-weight: 500; }
+
+    .activity-time {
+        font-size: .68rem;
+        color: #555;
+        white-space: nowrap;
+        padding-top: .15rem;
+    }
+
+    /* ── Quick actions panel ─────────────────── */
+    .quick-actions { list-style: none; }
+
+    .quick-action-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--border2);
+        text-decoration: none;
+        transition: padding-left .2s;
+    }
+
+    .quick-action-item:last-child { border-bottom: none; }
+    .quick-action-item:hover { padding-left: .5rem; }
+
+    .qa-label {
+        font-size: .825rem;
+        color: #a09080;
+        font-weight: 400;
+    }
+
+    .qa-arrow {
+        font-size: .9rem;
+        color: var(--gold);
+        opacity: 0;
+        transition: opacity .2s, transform .2s;
+    }
+
+    .quick-action-item:hover .qa-arrow { opacity: 1; transform: translateX(3px); }
+    .quick-action-item:hover .qa-label { color: var(--cream); }
+
+    /* ── Low stock strip ─────────────────────── */
+    .low-stock-strip {
+        background: rgba(180,50,50,0.08);
+        border: 1px solid rgba(180,50,50,0.2);
+        border-left: 3px solid #b43232;
+        padding: 1rem 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+    }
+
+    .lss-text { font-size: .825rem; color: #c07070; }
+    .lss-link { font-size: .72rem; color: #e07070; text-decoration: none; letter-spacing: .06em; text-transform: uppercase; border-bottom: 1px solid rgba(224,112,112,0.3); }
+</style>
+
+<div class="page-header">
+    <div>
+        <div class="page-eyebrow">Book Express</div>
+        <div class="page-title">Dashboard</div>
+        <div class="page-sub">Good to have you back, {{ user.username }}. Here's your inventory at a glance.</div>
+    </div>
+</div>
+
+<!-- Quick Search -->
+<form class="search-bar-wrap" action="{{ url_for('books.create') }}" method="GET">
+    <input class="search-bar" type="text" name="q" placeholder="Search the catalog — title, author, subject...">
+    <button class="search-submit" type="submit">Search Catalog</button>
+</form>
+
+<!-- Stat Cards -->
+<div class="stat-grid" id="stat-grid">
+    <div class="stat-cell">
+        <div class="stat-eyebrow">Total Titles</div>
+        <div class="stat-value" id="stat-titles">—</div>
+        <div class="stat-change">Books in catalog</div>
+    </div>
+    <div class="stat-cell">
+        <div class="stat-eyebrow">Total Units</div>
+        <div class="stat-value" id="stat-units">—</div>
+        <div class="stat-change">Combined stock</div>
+    </div>
+    <div class="stat-cell">
+        <div class="stat-eyebrow">Inventory Value</div>
+        <div class="stat-value" id="stat-value">—</div>
+        <div class="stat-change">At current prices</div>
+    </div>
+    <div class="stat-cell">
+        <div class="stat-eyebrow">Low Stock Items</div>
+        <div class="stat-value" id="stat-low">—</div>
+        <div class="stat-change">Below threshold</div>
+    </div>
+</div>
+
+<!-- Low stock warning strip (shown via JS if needed) -->
+<div class="low-stock-strip" id="low-stock-strip" style="display:none;">
+    <span class="lss-text"><strong id="lss-count">0</strong> items are running low on stock.</span>
+    <a href="{{ url_for('stock.low_stocks') }}" class="lss-link">View all</a>
+</div>
+
+<!-- Main two-column layout -->
+<div class="dash-grid">
+
+    <!-- Recent Activity -->
+    <div class="card-dark">
+        <div class="activity-header">
+            <div class="section-heading">Recent Activity</div>
+            <a href="{{ url_for('inventory.adjust_page') }}" class="btn-ghost" style="font-size:.68rem; padding:.45rem .9rem;">View adjustments</a>
+        </div>
+        <ul class="activity-list" id="activity-list">
+            <li class="activity-item">
+                <div class="activity-dot muted"></div>
+                <div class="activity-text">Loading recent adjustments...</div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card-dark">
+        <div class="section-heading" style="margin-bottom:1rem;">Quick Actions</div>
+        <ul class="quick-actions">
+            <a class="quick-action-item" href="{{ url_for('books.create') }}">
+                <span class="qa-label">Add a new book</span>
+                <span class="qa-arrow">&#8594;</span>
+            </a>
+            <a class="quick-action-item" href="{{ url_for('inventory.adjust_page') }}">
+                <span class="qa-label">Adjust stock levels</span>
+                <span class="qa-arrow">&#8594;</span>
+            </a>
+            <a class="quick-action-item" href="{{ url_for('orders.manage_orders') }}">
+                <span class="qa-label">Create a supplier order</span>
+                <span class="qa-arrow">&#8594;</span>
+            </a>
+            <a class="quick-action-item" href="{{ url_for('upload.upload_page') }}">
+                <span class="qa-label">Import sales from CSV</span>
+                <span class="qa-arrow">&#8594;</span>
+            </a>
+            <a class="quick-action-item" href="{{ url_for('stock.low_stocks') }}">
+                <span class="qa-label">Review low stock items</span>
+                <span class="qa-arrow">&#8594;</span>
+            </a>
+        </ul>
+    </div>
+
+</div>
+
+<script>
+(function () {
+    const fmt = n => n.toLocaleString();
+    const fmtCurrency = n => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    // Fetch dashboard stats
+    fetch('/api/dashboard')
+        .then(r => r.json())
+        .then(data => {
+            document.getElementById('stat-units').textContent  = fmt(data.total_books || 0);
+            document.getElementById('stat-value').textContent  = fmtCurrency(data.total_value || 0);
+        })
+        .catch(() => {});
+
+    // Fetch all books for titles + low stock count
+    fetch('/books/search?q=a')
+        .then(r => r.json())
+        .then(books => {})
+        .catch(() => {});
+
+    // Book count via simple approach
+    fetch('/books/search?q=')
+        .then(() => {})
+        .catch(() => {});
+
+    // Titles — count from a broad search isn't ideal; use catalog count if endpoint exists
+    // For now set placeholder and rely on dashboard API extension
+    document.getElementById('stat-titles').textContent = '—';
+
+    // Fetch recent inventory adjustments for activity feed
+    fetch('/inventory/adjustments?page=1&per_page=6')
+        .then(r => r.json())
+        .then(data => {
+            const list = document.getElementById('activity-list');
+            if (!data.data || data.data.length === 0) {
+                list.innerHTML = '<li class="activity-item"><div class="activity-dot muted"></div><div class="activity-text">No adjustments recorded yet.</div></li>';
+                return;
+            }
+            list.innerHTML = data.data.map(a => {
+                const delta = a.adjustment;
+                const sign  = delta > 0 ? '+' : '';
+                const dot   = delta > 0 ? '' : ' muted';
+                const when  = new Date(a.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                return `<li class="activity-item">
+                    <div class="activity-dot${dot}"></div>
+                    <div class="activity-text">
+                        Stock adjusted <strong>${sign}${delta}</strong> for book #${a.book_id}
+                        &mdash; <em>${a.reason}</em>
+                        ${a.adjusted_by ? ' by ' + a.adjusted_by : ''}
+                    </div>
+                    <div class="activity-time">${when}</div>
+                </li>`;
+            }).join('');
+        })
+        .catch(() => {
+            document.getElementById('activity-list').innerHTML =
+                '<li class="activity-item"><div class="activity-dot muted"></div><div class="activity-text">Could not load activity.</div></li>';
+        });
+
+    // Low stock fetch
+    fetch('/stock/')
+        .then(() => {})
+        .catch(() => {});
+
+    // Set low stock count from adjustments data — pull from low_stocks page via API call to our route
+    // We'll use a trick: check if there's a JSON endpoint or use the page count
+    document.getElementById('stat-low').textContent = '—';
+
+})();
+</script>
+{% endblock %}
+>>>>>>> Stashed changes

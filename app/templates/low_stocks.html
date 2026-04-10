@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block main %}
+<style>
+    .table-wrap {
+        background: var(--ink2);
+        border: 1px solid var(--border);
+        overflow: hidden;
+    }
+
+    .low-summary {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        padding: 1.5rem 1.75rem;
+        border-bottom: 1px solid var(--border2);
+        background: rgba(180,50,50,0.06);
+        border-left: 3px solid #b43232;
+    }
+
+    .low-summary-count {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 400;
+        color: #e07070;
+        line-height: 1;
+    }
+
+    .low-summary-text { font-size: .825rem; color: var(--muted); }
+    .low-summary-text strong { color: #e07070; display: block; font-size: .9rem; margin-bottom: .15rem; }
+
+    .stock-row td:first-child { font-family: 'Playfair Display', serif; font-size: .95rem; }
+
+    .qty-bar-wrap {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+    }
+
+    .qty-bar {
+        width: 80px;
+        height: 4px;
+        background: rgba(200,151,58,0.12);
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .qty-bar-fill {
+        height: 100%;
+        background: #b43232;
+        max-width: 100%;
+    }
+
+    .qty-text { font-family: 'Playfair Display', serif; font-size: .95rem; color: #e07070; }
+
+    .threshold-text { font-size: .72rem; color: #555; }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem;
+        color: var(--muted);
+        font-size: .875rem;
+    }
+
+    .no-issues {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.25rem;
+        color: #6ab87e;
+        margin-bottom: .5rem;
+    }
+</style>
+
+<div class="page-header">
+    <div>
+        <div class="page-eyebrow">Inventory</div>
+        <div class="page-title">Low Stock Alerts</div>
+        <div class="page-sub">Items that have fallen below the minimum threshold of 10 units.</div>
+    </div>
+    <a href="{{ url_for('orders.manage_orders') }}" class="btn-primary-dark">Create Order</a>
+</div>
+
+<div class="table-wrap">
+    {% if books %}
+    <div class="low-summary">
+        <div class="low-summary-count">{{ books|length }}</div>
+        <div class="low-summary-text">
+            <strong>Items need attention</strong>
+            These books are below the 10-unit threshold and may need restocking.
+        </div>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Grade / Subject</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th style="text-align:right;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr class="stock-row">
+                <td>{{ book.title }}</td>
+                <td style="color:var(--muted);">{{ book.author }}</td>
+                <td style="color:var(--muted); font-size:.78rem;">
+                    {{ book.grade or '—' }}{% if book.grade and book.subject %} / {% endif %}{{ book.subject or '' }}
+                </td>
+                <td>
+                    <div class="qty-bar-wrap">
+                        <div class="qty-bar">
+                            <div class="qty-bar-fill" style="width:{{ [book.quantity * 10, 100]|min }}%;"></div>
+                        </div>
+                        <span class="qty-text">{{ book.quantity }}</span>
+                        <span class="threshold-text">/ 10</span>
+                    </div>
+                </td>
+                <td>
+                    {% if book.quantity == 0 %}
+                        <span class="badge-danger">Out of Stock</span>
+                    {% else %}
+                        <span class="badge-danger">Low Stock</span>
+                    {% endif %}
+                </td>
+                <td style="text-align:right;">
+                    <a href="{{ url_for('orders.manage_orders') }}" class="btn-ghost" style="font-size:.7rem; padding:.4rem .9rem;">Reorder</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <div class="no-issues">All stock levels healthy</div>
+        No items are currently below the threshold of 10 units.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
