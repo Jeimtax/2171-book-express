@@ -151,7 +151,7 @@
             <form action="{{ url_for('books.create') }}" method="POST">
                 <div class="modal-body">
                     {{ form.csrf_token }}
-                    {% for field in [form.title, form.author, form.price, form.condition, form.grade, form.subject, form.quantity] %}
+                    {% for field in [form.title, form.author, form.price, form.grade, form.subject, form.quantity] %}
                         {{ field.label }}
                         {{ field() }}
                     {% endfor %}

@@ -4,9 +4,7 @@ from app.models.book import Book
 from app.forms import AddBook
 from app.models.inventorymanager import InventoryManager
 
-
 books_bp = Blueprint('books', __name__, url_prefix='/books')
-
 
 @books_bp.route('/view', methods=['GET', 'POST'])
 def create():
@@ -18,7 +16,6 @@ def create():
                 title=form.title.data,
                 author=form.author.data,
                 price=form.price.data,
-                condition=form.condition.data,
                 grade=form.grade.data,
                 subject=form.subject.data,
                 quantity=form.quantity.data

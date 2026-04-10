@@ -6,17 +6,15 @@ class Book (db.Model):
     title = db.Column(db.String(80), nullable=False)
     author = db.Column(db.String(80), nullable=False)
     price = db.Column(db.Float, nullable=False)
-    condition = db.Column(db.String(80), nullable=False)
     grade = db.Column(db.String(80))
     subject = db.Column(db.String(80))
     quantity = db.Column(db.Integer, nullable=False, default=1)
     
 
-    def __init__(self, title, author, price, condition, grade, subject, quantity=1):
+    def __init__(self, title, author, price, grade, subject, quantity=1):
         self.title = title
         self.author = author
         self.price = price
-        self.condition = condition
         self.grade = grade
         self.subject = subject
         self.quantity = quantity

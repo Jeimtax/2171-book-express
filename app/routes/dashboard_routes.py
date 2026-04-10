@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, render_template
 from app.models.book import Book
+from flask_login import login_required
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
@@ -16,7 +17,7 @@ def dashboard_data():
         "total_value": total_value,
     })
 
-
+@login_required
 @dashboard_bp.route('/dashboard')
 def dashboard_page():
     return render_template('dashboard.html')

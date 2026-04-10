@@ -4,6 +4,8 @@ from .config import Config
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
+from flask import request, redirect, url_for
+from flask_login import current_user
 
 
 app = Flask(__name__)
@@ -27,6 +29,14 @@ from app.models.user import User
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+@app.before_request
+def require_login():
+    # List of endpoints that DO NOT require login
+    allowed_routes = ['auth.login', 'static'] 
+    
+    if not current_user.is_authenticated and request.endpoint not in allowed_routes:
+        return redirect(url_for('auth.login'))
 
 from app.routes.books_routes import books_bp
 from app.routes.csv_routes import upload_bp
