@@ -19,16 +19,16 @@ class ManageOrderForm(FlaskForm):
     supplier_name = StringField('Supplier Name', validators=[DataRequired(), Length(max=120)])
     supplier_phone = StringField('Supplier Phone',validators=[DataRequired(), Length(max=30)])
     supplier_address = TextAreaField('Supplier Address',validators=[DataRequired(), Length(max=255)])
-    book_id = SelectField('Book (optional)',coerce=int,validators=[])
-    title = StringField('Book Title',validators=[DataRequired(), Length(max=120)])
-    author = StringField('Book Author',validators=[DataRequired(), Length(max=120)])
+    book_id = SelectField('Book',coerce=int,validators=[DataRequired()])
+    title = StringField('Book Title (Optional) ',validators=[Length(max=120)])
+    author = StringField('Book Author (Optional)',validators=[Length(max=120)])
     quantity = IntegerField('Quantity',validators=[DataRequired(), NumberRange(min=1)])
     submit = SubmitField('Create Order')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         books = Book.query.order_by(Book.title.asc()).all()
-        self.book_id.choices = [(0, '-- Select Book (optional) --')] + [
+        self.book_id.choices = [(0, '-- Select Book --')] + [
             (book.id, f'{book.title} by {book.author}')
             for book in books
         ]

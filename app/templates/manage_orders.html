@@ -58,18 +58,18 @@
                     <h6 class="text-muted text-uppercase fw-semibold mb-3" style="font-size:.75rem; letter-spacing:.08em;">Book Details</h6>
                     <div class="row g-3">
                         <div class="col-12">
-                            <label class="form-label fw-semibold">Linked Book <span class="text-muted fw-normal">(optional)</span></label>
+                            <label class="form-label fw-semibold">Linked Book</label>
                             {{ form.book_id(class="form-select", id="book_id") }}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Book Title</label>
+                            <label class="form-label fw-semibold">Book Title <span class="text-muted fw-normal">(optional)</label>
                             {{ form.title(class="form-control", id="title") }}
                             {% for error in form.title.errors %}
                                 <div class="text-danger small mt-1">{{ error }}</div>
                             {% endfor %}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Author</label>
+                            <label class="form-label fw-semibold">Author <span class="text-muted fw-normal">(optional)</label>
                             {{ form.author(class="form-control", id="author") }}
                             {% for error in form.author.errors %}
                                 <div class="text-danger small mt-1">{{ error }}</div>
