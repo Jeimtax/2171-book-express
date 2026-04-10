@@ -1,9 +1,83 @@
-{% extends "base.html"%}
+{% extends "base.html" %}
+
 {% block main %}
-    <h1>Book Express - CSV Upload</h1>
-    <form action="/upload/csv" enctype="multipart/form-data" method="POST">
-        <label for="csv">Select CSV file:</label><br><br>
-        <input type="file" name="csv" id="csv" accept=".csv" required>
-        <input type="submit" value="Upload">
-    </form>
-{% endblock%}
+<style>
+    .upload-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding-top: 4rem;
+    }
+
+    .upload-wrap .brand {
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: #111;
+        margin-bottom: .75rem;
+    }
+
+    .upload-wrap h1 {
+        font-size: 2rem;
+        font-weight: 400;
+        color: #111;
+        margin-bottom: 2rem;
+    }
+
+    .upload-form {
+        width: 100%;
+        max-width: 320px;
+        text-align: left;
+    }
+
+    .upload-form label {
+        display: block;
+        font-size: .7rem;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: #888;
+        margin-bottom: .4rem;
+    }
+
+    .upload-form input[type="file"] {
+        width: 100%;
+        padding: .7rem .9rem;
+        border: 1px solid #e0ddd8;
+        border-radius: 2px;
+        background: #fff;
+        font-family: 'Outfit', sans-serif;
+        font-size: .875rem;
+        color: #555;
+        margin-bottom: 1.5rem;
+    }
+
+    .upload-form input[type="submit"] {
+        width: 100% !important;
+        padding: .8rem !important;
+        background: #111 !important;
+        color: #faf9f7 !important;
+        border: none !important;
+        border-radius: 2px !important;
+        font-family: 'Outfit', sans-serif !important;
+        font-size: .9rem !important;
+        font-weight: 500 !important;
+        cursor: pointer !important;
+        letter-spacing: .04em !important;
+    }
+</style>
+
+<div class="upload-wrap">
+    <div class="brand">Book Express</div>
+    <h1>Import CSV</h1>
+    <div class="upload-form">
+        <form action="/upload/csv" enctype="multipart/form-data" method="POST">
+            <label for="csv">Select CSV file</label>
+            <input type="file" name="csv" id="csv" accept=".csv" required>
+            <input type="submit" value="Upload">
+        </form>
+    </div>
+</div>
+{% endblock %}

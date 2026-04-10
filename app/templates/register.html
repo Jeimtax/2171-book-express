@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Book Express</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/app.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .left {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 4rem;
+            background: #faf9f7;
+            text-align: center;
+        }
+
+        .brand {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111;
+            margin-bottom: .75rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 400;
+            color: #111;
+            margin-bottom: 2rem;
+        }
+
+        .form-wrap { width: 100%; max-width: 320px; text-align: left; }
+
+        label {
+            display: block !important;
+            font-size: .7rem !important;
+            letter-spacing: .08em !important;
+            text-transform: uppercase !important;
+            color: #888 !important;
+            margin-bottom: .4rem !important;
+            font-weight: 400 !important;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        select {
+            width: 100% !important;
+            padding: .7rem .9rem !important;
+            border: 1px solid #e0ddd8 !important;
+            border-radius: 2px !important;
+            background: #fff !important;
+            font-family: 'Outfit', sans-serif !important;
+            font-size: .9rem !important;
+            color: #111 !important;
+            outline: none !important;
+            margin-bottom: .4rem !important;
+            transition: border-color .15s !important;
+            appearance: none !important;
+            box-shadow: none !important;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        select:focus {
+            border-color: #111 !important;
+            box-shadow: none !important;
+        }
+
+        .field-wrap { margin-bottom: 1.1rem; }
+
+        .error { font-size: .78rem; color: #c0392b; margin-top: .25rem; }
+
+        .submit-btn {
+            display: block !important;
+            width: 100% !important;
+            padding: .8rem !important;
+            background: #111 !important;
+            color: #faf9f7 !important;
+            border: none !important;
+            border-radius: 2px !important;
+            font-family: 'Outfit', sans-serif !important;
+            font-size: .9rem !important;
+            font-weight: 500 !important;
+            cursor: pointer !important;
+            letter-spacing: .04em !important;
+            margin-top: .5rem !important;
+            text-align: center !important;
+            transition: opacity .15s !important;
+        }
+
+        .submit-btn:hover { opacity: .8 !important; }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1.25rem;
+            font-size: .85rem;
+            color: #888;
+        }
+
+        .login-link a { color: #111; font-weight: 500; }
+
+        .right { overflow: hidden; }
+
+        .right img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            body { grid-template-columns: 1fr; }
+            .right { display: none; }
+            .left { padding: 2rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="left">
+
+        <div class="brand">Book Express</div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show mb-3 w-100" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h1>Create account</h1>
+
+        <div class="form-wrap">
+            <form method="POST" novalidate>
+                {{ form.csrf_token }}
+
+                <div class="field-wrap">
+                    {{ form.username.label }}
+                    {{ form.username(placeholder="Choose a username") }}
+                    {% if form.username.errors %}
+                        {% for error in form.username.errors %}
+                            <div class="error">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="field-wrap">
+                    {{ form.password.label }}
+                    {{ form.password(placeholder="Minimum 8 characters") }}
+                    {% if form.password.errors %}
+                        {% for error in form.password.errors %}
+                            <div class="error">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="field-wrap">
+                    {{ form.role.label }}
+                    {{ form.role() }}
+                    {% if form.role.errors %}
+                        {% for error in form.role.errors %}
+                            <div class="error">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                {{ form.submit(class="submit-btn") }}
+            </form>
+
+            <p class="login-link">Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a></p>
+        </div>
+
+    </div>
+
+    <div class="right">
+        <img src="{{ url_for('static', filename='images/pexels-matteobasilephoto-8464020.jpg') }}" alt="">
+    </div>
+
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>
