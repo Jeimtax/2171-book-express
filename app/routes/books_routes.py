@@ -1,10 +1,12 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify
 from app import db
 from app.models.book import Book
+from app.models.inventorymanager import InventoryManager
 from app.forms import AddBook
 
 
 books_bp = Blueprint('books', __name__, url_prefix='/books')
+inventory_manager = InventoryManager()
 
 
 @books_bp.route('/view', methods=['GET', 'POST'])
