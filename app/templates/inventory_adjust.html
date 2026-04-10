@@ -1,38 +1,84 @@
 {% extends "base.html" %}
-    
+
 {% block main %}
-    <div class="container">
-        <span class="badge">Book Express</span>
+<style>
+    .adjust-card {
+        background: #fff;
+        border: 1px solid #e0ddd8;
+        border-radius: 8px;
+        padding: 2.5rem;
+        max-width: 480px;
+    }
 
-        <h1>Adjust Inventory Manually</h1>
+    .adjust-card h2 {
+        font-size: 1.5rem;
+        font-weight: 400;
+        margin-bottom: .5rem;
+    }
 
-        <p>
-            This page is reserved for the manual inventory adjustment interface.<br>
-            The backend routes are live and ready.
-        </p>
+    .adjust-card p {
+        font-size: .875rem;
+        color: #888;
+        margin-bottom: 2rem;
+    }
 
-        <div class="divider"></div>
+    .adjust-card h3 {
+        font-size: .7rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: #aaa;
+        margin-bottom: 1rem;
+    }
 
-        <div class="api-ref">
-            <h3>Available Endpoints</h3>
-            <ul>
-                <li>
-                    <span class="method post">POST</span>
-                    <span class="endpoint">/inventory/adjust/&lt;book_id&gt;</span>
-                </li>
-                <li>
-                    <span class="method get">GET</span>
-                    <span class="endpoint">/inventory/adjustments</span>
-                </li>
-                <li>
-                    <span class="method get">GET</span>
-                    <span class="endpoint">/inventory/adjustments/&lt;book_id&gt;</span>
-                </li>
-                <li>
-                    <span class="method get">GET</span>
-                    <span class="endpoint">/inventory/reasons</span>
-                </li>
-            </ul>
-        </div>
+    .endpoint-row {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        padding: .6rem 0;
+        border-bottom: 1px solid #f0ede8;
+        font-size: .875rem;
+    }
+
+    .endpoint-row:last-child { border-bottom: none; }
+
+    .method {
+        font-size: .65rem;
+        font-weight: 600;
+        letter-spacing: .06em;
+        padding: .2rem .5rem;
+        border-radius: 4px;
+        min-width: 42px;
+        text-align: center;
+    }
+
+    .method.post { background: #fef3c7; color: #92400e; }
+    .method.get  { background: #dbeafe; color: #1e40af; }
+
+    .endpoint { color: #555; font-family: monospace; font-size: .8rem; }
+</style>
+
+<div class="adjust-card">
+    <h2>Adjust Inventory Manually</h2>
+    <p>This page is reserved for the manual inventory adjustment interface.<br>The backend routes are live and ready.</p>
+
+    <h3>Available Endpoints</h3>
+
+    <div class="endpoint-row">
+        <span class="method post">POST</span>
+        <span class="endpoint">/inventory/adjust/&lt;book_id&gt;</span>
     </div>
+    <div class="endpoint-row">
+        <span class="method get">GET</span>
+        <span class="endpoint">/inventory/adjustments</span>
+    </div>
+    <div class="endpoint-row">
+        <span class="method get">GET</span>
+        <span class="endpoint">/inventory/adjustments/&lt;book_id&gt;</span>
+    </div>
+    <div class="endpoint-row">
+        <span class="method get">GET</span>
+        <span class="endpoint">/inventory/reasons</span>
+    </div>
+</div>
 {% endblock %}

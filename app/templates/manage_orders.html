@@ -1,358 +1,318 @@
-git<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Express - Manage Orders</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
         body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            color: #1f2937;
-            margin: 0;
-            padding: 2rem;
+            font-family: 'Outfit', sans-serif;
+            background: #faf9f7;
+            color: #111;
+            min-height: 100vh;
+            display: flex;
         }
-
-        .page {
-            max-width: 980px;
-            margin: 0 auto;
+ 
+        .sidebar {
+            width: 220px;
+            background: #111;
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+            position: sticky;
+            top: 0;
+            flex-shrink: 0;
         }
-
-        h1 {
-            margin-bottom: 0.5rem;
+ 
+        .sidebar .brand {
+            font-size: .95rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: #faf9f7;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 2rem;
         }
-
-        .intro {
-            margin-bottom: 1.75rem;
-            color: #4b5563;
+ 
+        .sidebar hr { border-color: #333; margin-bottom: 1.5rem; }
+ 
+        .sidebar a {
+            color: #aaa;
+            font-size: .875rem;
+            padding: .45rem 0;
+            display: block;
+            text-decoration: none;
         }
-
+ 
+        .main-content { padding: 2.5rem 3rem; width: 100%; }
+ 
+        h1 { font-size: 1.5rem; font-weight: 400; margin-bottom: .4rem; }
+ 
+        .intro { font-size: .875rem; color: #888; margin-bottom: 2rem; }
+ 
         .card {
-            background: #ffffff;
-            border: 1px solid #d1d5db;
-            border-radius: 12px;
-            padding: 1.5rem;
+            background: #fff;
+            border: 1px solid #e0ddd8;
+            border-radius: 8px;
+            padding: 2rem;
             margin-bottom: 1.5rem;
-            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.05);
         }
-
-        .form-row {
-            display: grid;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
+ 
+        .card h2 { font-size: 1rem; font-weight: 500; margin-bottom: 1.5rem; }
+ 
+        .message { font-size: .875rem; color: #166534; margin-bottom: 1.25rem; }
+ 
+        .form-row { display: grid; gap: 1rem; margin-bottom: 1rem; }
+ 
         label {
             display: block;
-            font-size: 0.95rem;
-            margin-bottom: 0.4rem;
-            font-weight: 600;
+            font-size: .7rem;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: .4rem;
         }
-
+ 
         input[type="text"],
         input[type="number"],
         select,
         textarea {
             width: 100%;
-            padding: 0.85rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            background: #f9fafb;
-            box-sizing: border-box;
+            padding: .7rem .9rem;
+            border: 1px solid #e0ddd8;
+            border-radius: 6px;
+            background: #faf9f7;
+            font-family: 'Outfit', sans-serif;
+            font-size: .875rem;
+            color: #111;
+            outline: none;
         }
-
-        textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
+ 
+        input:focus, select:focus, textarea:focus { border-color: #111; }
+ 
+        textarea { min-height: 100px; resize: vertical; }
+ 
         button[type="submit"] {
-            background: #2563eb;
-            color: white;
+            padding: .8rem 1.5rem;
+            background: #111;
+            color: #faf9f7;
             border: none;
-            border-radius: 8px;
-            padding: 0.95rem 1.25rem;
+            border-radius: 6px;
+            font-family: 'Outfit', sans-serif;
+            font-size: .9rem;
+            font-weight: 500;
             cursor: pointer;
-            font-size: 1rem;
+            letter-spacing: .04em;
+            margin-top: .5rem;
         }
-
-        .message {
-            color: #047857;
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
-
-        .field-error {
-            color: #b91c1c;
-            font-size: 0.9rem;
-            margin-top: 0.35rem;
-        }
-
-        /* Order list */
+ 
+        .field-error { font-size: .78rem; color: #c0392b; margin-top: .25rem; }
+ 
         .order-item {
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 1.25rem 0;
+            border-bottom: 1px solid #f0ede8;
         }
-
-        .order-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
+ 
+        .order-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .order-item:first-child { padding-top: 0; }
+ 
         .order-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 1rem;
             flex-wrap: wrap;
-            margin-bottom: 0.5rem;
+            gap: .75rem;
+            margin-bottom: .75rem;
         }
-
-        .order-title {
-            font-size: 1rem;
-            font-weight: 700;
-        }
-
-        .order-meta {
-            color: #6b7280;
-            font-size: 0.9rem;
-        }
-
-        .supplier-info,
-        .items-info {
-            margin-top: 0.5rem;
-            line-height: 1.7;
-            font-size: 0.95rem;
-        }
-
-        .no-orders {
-            color: #6b7280;
-            margin-top: 1rem;
-        }
-
-        /* Status badge */
+ 
+        .order-title { font-size: .95rem; font-weight: 500; }
+        .order-meta { font-size: .8rem; color: #888; }
+ 
+        .supplier-info, .items-info { font-size: .85rem; color: #555; line-height: 1.8; }
+        .supplier-info strong, .items-info strong { color: #111; font-weight: 500; }
+ 
+        .no-orders { font-size: .875rem; color: #888; }
+ 
         .status-badge {
-            display: inline-block;
-            font-size: 0.72rem;
+            font-size: .65rem;
             font-weight: 600;
-            letter-spacing: 0.06em;
+            letter-spacing: .06em;
             text-transform: uppercase;
-            padding: 0.2rem 0.6rem;
+            padding: .2rem .55rem;
             border-radius: 999px;
         }
-
-        .status-badge.pending {
-            background: #fef9c3;
-            color: #854d0e;
-        }
-
-        .status-badge.delivered {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        /* Confirm delivery button */
+ 
+        .status-badge.pending   { background: #fef9c3; color: #854d0e; }
+        .status-badge.delivered { background: #dcfce7; color: #166534; }
+ 
         .btn-confirm {
-            background: #16a34a;
-            color: white;
+            background: #111;
+            color: #faf9f7;
             border: none;
             border-radius: 6px;
-            padding: 0.45rem 1rem;
-            font-size: 0.875rem;
+            padding: .4rem .9rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: .8rem;
             cursor: pointer;
             font-weight: 500;
-            transition: background 0.15s;
         }
-
-        .btn-confirm:hover {
-            background: #15803d;
-        }
-
-        .btn-confirm:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
-
-        /* Inline feedback */
-        .delivery-msg {
-            font-size: 0.85rem;
-            margin-top: 0.4rem;
-            font-weight: 500;
-        }
-
-        .delivery-msg.success { color: #15803d; }
-        .delivery-msg.error   { color: #b91c1c; }
+ 
+        .btn-confirm:disabled { opacity: .4; cursor: not-allowed; }
+ 
+        .delivery-msg { font-size: .8rem; margin-top: .4rem; font-weight: 500; }
+        .delivery-msg.success { color: #166534; }
+        .delivery-msg.error   { color: #c0392b; }
     </style>
 </head>
 <body>
-    <div class="page">
+ 
+    <div class="sidebar">
+        <a href="/" class="brand">Book Express</a>
+        <hr>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/books">Inventory</a>
+        <a href="/upload">Import CSV</a>
+        <a href="/inventory/adjust">Adjust Inventory</a>
+        <a href="/change-password">Change Password</a>
+    </div>
+ 
+    <div class="main-content">
         <h1>Manage Orders</h1>
         <p class="intro">Create new orders with supplier details and see all saved orders below.</p>
-
+ 
         <!-- Create Order Form -->
         <div class="card">
-            {% if message %}
-                <div class="message">{{ message }}</div>
-            {% endif %}
-
+            {% if message %}<div class="message">{{ message }}</div>{% endif %}
+ 
             <form method="POST" action="{{ url_for('orders.manage_orders') }}">
                 {{ form.hidden_tag() }}
-
-                <div class="form-row">
+ 
+                <div class="form-row" style="grid-template-columns:1fr 1fr;">
                     <div>
-                        <label for="supplier_name">Supplier Name</label>
+                        <label>Supplier Name</label>
                         {{ form.supplier_name(id='supplier_name') }}
-                        {% for error in form.supplier_name.errors %}
-                            <div class="field-error">{{ error }}</div>
-                        {% endfor %}
+                        {% for error in form.supplier_name.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
                     </div>
                     <div>
-                        <label for="supplier_phone">Phone Number</label>
+                        <label>Phone Number</label>
                         {{ form.supplier_phone(id='supplier_phone') }}
-                        {% for error in form.supplier_phone.errors %}
-                            <div class="field-error">{{ error }}</div>
-                        {% endfor %}
+                        {% for error in form.supplier_phone.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
                     </div>
                 </div>
-
+ 
                 <div class="form-row">
                     <div>
-                        <label for="supplier_address">Supplier Address</label>
+                        <label>Supplier Address</label>
                         {{ form.supplier_address(id='supplier_address') }}
-                        {% for error in form.supplier_address.errors %}
-                            <div class="field-error">{{ error }}</div>
-                        {% endfor %}
+                        {% for error in form.supplier_address.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
                     </div>
                 </div>
-
+ 
                 <div class="form-row">
                     <div>
-                        <label for="book_id">Linked Book</label>
+                        <label>Linked Book</label>
                         {{ form.book_id(id='book_id') }}
                     </div>
                 </div>
-
-                <div class="form-row">
+ 
+                <div class="form-row" style="grid-template-columns:1fr 1fr;">
                     <div>
-                        <label for="title">Book Title</label>
+                        <label>Book Title</label>
                         {{ form.title(id='title') }}
-                        {% for error in form.title.errors %}
-                            <div class="field-error">{{ error }}</div>
-                        {% endfor %}
+                        {% for error in form.title.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
                     </div>
                     <div>
-                        <label for="author">Book Author</label>
+                        <label>Book Author</label>
                         {{ form.author(id='author') }}
-                        {% for error in form.author.errors %}
-                            <div class="field-error">{{ error }}</div>
-                        {% endfor %}
+                        {% for error in form.author.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
                     </div>
                 </div>
-
+ 
                 <div class="form-row">
                     <div>
-                        <label for="quantity">Quantity</label>
+                        <label>Quantity</label>
                         {{ form.quantity(id='quantity') }}
-                        {% for error in form.quantity.errors %}
-                            <div class="field-error">{{ error }}</div>
-                        {% endfor %}
+                        {% for error in form.quantity.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
                     </div>
                 </div>
-
+ 
                 <button type="submit">{{ form.submit.label.text }}</button>
             </form>
         </div>
-
+ 
         <!-- Orders List -->
         <div class="card">
             <h2>Existing Orders</h2>
             {% if orders %}
                 {% for order in orders %}
-                    <div class="order-item" id="order-{{ order.id }}">
-                        <div class="order-header">
-                            <div>
-                                <span class="order-title">Order #{{ order.id }}</span>
-                                &nbsp;
-                                <span class="status-badge {{ order.status }}" id="badge-{{ order.id }}">
-                                    {{ order.status }}
-                                </span>
-                            </div>
-                            <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
-                                <span class="order-meta">{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
-                                {% if order.status == 'pending' %}
-                                    <button
-                                        class="btn-confirm"
-                                        id="btn-{{ order.id }}"
-                                        onclick="confirmDelivery({{ order.id }})">
-                                        ✓ Confirm Delivery
-                                    </button>
-                                {% endif %}
-                            </div>
+                <div class="order-item" id="order-{{ order.id }}">
+                    <div class="order-header">
+                        <div style="display:flex;align-items:center;gap:.6rem;">
+                            <span class="order-title">Order #{{ order.id }}</span>
+                            <span class="status-badge {{ order.status }}" id="badge-{{ order.id }}">{{ order.status }}</span>
                         </div>
-
-                        <div class="supplier-info">
-                            <strong>Supplier:</strong> {{ order.supplier.name }}<br>
-                            <strong>Phone:</strong> {{ order.supplier.phone }}<br>
-                            <strong>Address:</strong> {{ order.supplier.address }}
-                        </div>
-
-                        <div class="items-info">
-                            {% if order.book %}
-                                <strong>Linked Book:</strong> {{ order.book.title }} by {{ order.book.author }}<br>
+                        <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+                            <span class="order-meta">{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                            {% if order.status == 'pending' %}
+                                <button class="btn-confirm" id="btn-{{ order.id }}" onclick="confirmDelivery({{ order.id }})">✓ Confirm Delivery</button>
                             {% endif %}
-                            <strong>Title:</strong> {{ order.title }}<br>
-                            <strong>Author:</strong> {{ order.author }}<br>
-                            <strong>Quantity:</strong> {{ order.quantity }}
                         </div>
-
-                        <div class="delivery-msg" id="msg-{{ order.id }}"></div>
                     </div>
+ 
+                    <div class="supplier-info">
+                        <strong>Supplier:</strong> {{ order.supplier.name }}<br>
+                        <strong>Phone:</strong> {{ order.supplier.phone }}<br>
+                        <strong>Address:</strong> {{ order.supplier.address }}
+                    </div>
+ 
+                    <div class="items-info" style="margin-top:.5rem;">
+                        {% if order.book %}<strong>Linked Book:</strong> {{ order.book.title }} by {{ order.book.author }}<br>{% endif %}
+                        <strong>Title:</strong> {{ order.title }}<br>
+                        <strong>Author:</strong> {{ order.author }}<br>
+                        <strong>Quantity:</strong> {{ order.quantity }}
+                    </div>
+ 
+                    <div class="delivery-msg" id="msg-{{ order.id }}"></div>
+                </div>
                 {% endfor %}
             {% else %}
                 <p class="no-orders">No orders have been created yet.</p>
             {% endif %}
         </div>
     </div>
-
+ 
     <script>
         async function confirmDelivery(orderId) {
             const btn = document.getElementById(`btn-${orderId}`);
             const badge = document.getElementById(`badge-${orderId}`);
             const msg = document.getElementById(`msg-${orderId}`);
-
+ 
             btn.disabled = true;
             btn.textContent = 'Confirming...';
-
+ 
             try {
                 const response = await fetch(`/orders/${orderId}/confirm-delivery`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' }
                 });
-
                 const data = await response.json();
-
+ 
                 if (response.ok && data.success) {
-                    // Update badge
                     badge.textContent = 'delivered';
                     badge.className = 'status-badge delivered';
-
-                    // Remove button
                     btn.remove();
-
-                    // Show success message
                     msg.textContent = data.message;
                     msg.className = 'delivery-msg success';
                 } else {
-                    // Show error, re-enable button
                     msg.textContent = data.error || 'Something went wrong.';
                     msg.className = 'delivery-msg error';
                     btn.disabled = false;
                     btn.textContent = '✓ Confirm Delivery';
                 }
-            } catch (err) {
+            } catch {
                 msg.textContent = 'Network error. Please try again.';
                 msg.className = 'delivery-msg error';
                 btn.disabled = false;

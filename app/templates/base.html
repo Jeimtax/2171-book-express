@@ -5,10 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/app.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <title>Book Express</title>
+    <style>
+        body { font-family: 'Outfit', sans-serif; background: #faf9f7; color: #111; }
+
+        .sidebar {
+            width: 220px;
+            background: #111;
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+            position: sticky;
+            top: 0;
+            flex-shrink: 0;
+        }
+
+        .sidebar .brand {
+            font-size: .95rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: #faf9f7;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar .nav-link {
+            color: #aaa;
+            font-size: .875rem;
+            padding: .45rem 0;
+            font-weight: 400;
+        }
+
+        .sidebar hr { border-color: #333; margin-bottom: 1.5rem; }
+
+        .main-content { padding: 2.5rem 3rem; width: 100%; }
+
+        .alert { font-family: 'Outfit', sans-serif; font-size: .875rem; border-radius: 6px; }
+    </style>
 </head>
 <body>
-    
+
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
@@ -19,34 +57,31 @@
     {% endfor %}
   {% endif %}
 {% endwith %}
+
 <div class="d-flex">
-    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-primary vh-100 sticky-top" style="width: 250px;">
-        <a href="/" class="text-white text-decoration-none">
-            <span class="fs-4">Book Express</span>
-        </a>
+    <div class="sidebar">
+        <a href="/" class="brand">Book Express</a>
         <hr>
-        <ul class="nav nav-pills flex-column mb-auto">
+        <ul class="nav nav-pills flex-column mb-auto gap-1">
             <li class="nav-item">
-                <a href="{{ url_for('auth.dashboard') }}" class="nav-link text-white">Dashboard</a>
+                <a href="{{ url_for('auth.dashboard') }}" class="nav-link">Dashboard</a>
             </li>
             <li>
-                <a href="{{ url_for('books.create')}}" class="nav-link text-white">Inventory</a>
+                <a href="{{ url_for('books.create') }}" class="nav-link">Inventory</a>
             </li>
             <li>
-                <a href="{{ url_for('upload.upload_page') }}" class="nav-link text-white">Import CSV</a>
+                <a href="{{ url_for('upload.upload_page') }}" class="nav-link">Import CSV</a>
             </li>
             <li>
-                <a href="{{ url_for('inventory.adjust_page')}}" class="nav-link text-white">Adjust Inventory</a>
+                <a href="{{ url_for('inventory.adjust_page') }}" class="nav-link">Adjust Inventory</a>
             </li>
             <li>
-                <a href="{{ url_for('auth.change_password') }}" class="nav-link text-white">Change Password</a>
+                <a href="{{ url_for('auth.change_password') }}" class="nav-link">Change Password</a>
             </li>
         </ul>
     </div>
 
-    
-
-    <div class="p-4 w-100">
+    <div class="main-content">
         {% block main %}{% endblock %}
     </div>
 </div>
