@@ -102,15 +102,50 @@
         cursor: pointer;
         letter-spacing: .04em;
     }
+    .card-actions { margin-top: auto; pt-3; display: flex; gap: 10px; border-top: 1px solid #f0ede8; padding-top: 1rem; margin-top: 1.5rem; }
+    .btn-action { font-size: .65rem; text-transform: uppercase; letter-spacing: .05em; padding: .4rem .8rem; border-radius: 2px; cursor: pointer; text-decoration: none; font-weight: 500; font-family: 'Outfit', sans-serif; transition: all 0.2s; }
+    .btn-edit { background: #faf9f7; color: #111; border: 1px solid #e0ddd8; }
+    .btn-edit:hover { background: #111; color: #fff; border-color: #111; }
+    .btn-delete-trigger { background: transparent; color: #d9534f; border: 1px solid transparent; }
+    .btn-delete-trigger:hover { border-color: #d9534f; background: #fff5f5; }
+
+    /* Modal Overrides */
+    .modal-content { 
+        border: 1px solid #e0ddd8; 
+        border-radius: 2px; 
+        font-family: 'Outfit', sans-serif; 
+    }
+    .modal-header { 
+        border-bottom: 1px solid #f0ede8; 
+        padding: 1.25rem 1.5rem; 
+    }
+    .modal-title { 
+        font-size: 1rem; 
+        font-weight: 500; 
+    }
+    .modal-body label { 
+        font-size: .7rem;
+        letter-spacing: .08em; 
+        text-transform: uppercase; 
+        color: #888; 
+        margin-bottom: .4rem; 
+        display: block; 
+        font-weight: 400; }
+
+    .modal-body input, .modal-body select { 
+        width: 100%; padding: .65rem .9rem; border: 1px solid #e0ddd8; border-radius: 2px; background: #faf9f7; font-family: 'Outfit', sans-serif; font-size: .875rem; color: #111; outline: none; margin-bottom: 1rem; }
+    .modal-footer { border-top: 1px solid #f0ede8; padding: 1rem 1.5rem; }
+    .btn-cancel { padding: .65rem 1.1rem; background: none; border: 1px solid #e0ddd8; border-radius: 2px; font-family: 'Outfit', sans-serif; font-size: .875rem; color: #555; cursor: pointer; }
+    .btn-submit { padding: .65rem 1.25rem; background: #111; color: #faf9f7; border: none; border-radius: 2px; font-family: 'Outfit', sans-serif; font-size: .875rem; font-weight: 500; cursor: pointer; letter-spacing: .04em; }
 </style>
 
 <button type="button" class="btn-add" data-bs-toggle="modal" data-bs-target="#addItemModal">+ Add New Book</button>
 
-<div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+<div class="modal fade" id="addItemModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addItemModalLabel">Add New Book</h5>
+                <h5 class="modal-title">Add New Book</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ url_for('books.create') }}" method="POST">
@@ -136,7 +171,7 @@
 <div class="row g-3">
     {% for book in all_books %}
     <div class="col-md-4">
-        <div class="book-card">
+        <div class="book-card shadow-sm">
             <h5>{{ book.title }}</h5>
             <h6>by {{ book.author }}</h6>
             <div class="detail"><span class="detail-key">Price</span> ${{ "%.2f"|format(book.price) }}</div>
@@ -144,10 +179,36 @@
             <div class="detail"><span class="detail-key">Subject</span> {{ book.subject }}</div>
             <div class="detail"><span class="detail-key">Condition</span> {{ book.condition }}</div>
             <div class="detail"><span class="detail-key">Quantity</span> {{ book.quantity }}</div>
+
+            <div class="card-actions">
+                <a href="{{ url_for('books.update', id=book.id) }}" class="btn-action btn-edit">Edit Info</a>
+                
+                <button type="button" class="btn-action btn-delete-trigger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ book.id }}">
+                    Delete
+                </button>
+            </div>
         </div>
     </div>
+
+    <div class="modal fade" id="deleteModal{{ book.id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-4">
+                    <h6 class="mb-3">Delete this book?</h6>
+                    <p class="text-muted small mb-4">This will permanently remove <strong>{{ book.title }}</strong> from the inventory.</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <button type="button" class="btn-cancel" data-bs-dismiss="modal">No, Keep</button>
+                        <form action="{{ url_for('books.delete_item', id=book.id) }}" method="POST">
+                            <button type="submit" class="btn-submit" style="background:#d9534f;">Yes, Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {% else %}
-    <div class="col-12">
+    <div class="col-12 text-center py-5">
         <p style="color:#888; font-size:.875rem;">No books found in the inventory.</p>
     </div>
     {% endfor %}

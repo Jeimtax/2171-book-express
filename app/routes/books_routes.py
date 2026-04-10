@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, flash, redirect, url_for, request,
 from app import db
 from app.models.book import Book
 from app.forms import AddBook
+from app.models.inventorymanager import InventoryManager
 
 
 books_bp = Blueprint('books', __name__, url_prefix='/books')
@@ -29,6 +30,24 @@ def create():
 
     all_books = Book.query.all()
     return render_template('books.html', all_books=all_books, form=form)
+
+@books_bp.route('/update/<int:id>', methods=['GET', 'POST'])
+def update(id):
+    book = Book.query.get_or_404(id)
+    form = AddBook(obj=book) # This pre-fills the form with current book info
+    
+    if form.validate_on_submit():
+        InventoryManager.manage_book_info(id, form.data)
+        flash(f'Updated "{book.title}" successfully.', 'success')
+        return redirect(url_for('books.create'))
+    
+    return render_template('update_book.html', form=form, book=book)
+
+@books_bp.route('/delete/<int:id>', methods=['POST'])
+def delete_item(id):
+    InventoryManager.delete_book(id)
+    flash('Book removed from inventory.', 'success')
+    return redirect(url_for('books.create'))
 
 
 @books_bp.route('/search', methods=['GET'])

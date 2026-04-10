@@ -10,6 +10,14 @@ class InventoryManager:
         db.session.commit()
         return book
     
+    @staticmethod
+    def delete_book(book_id):
+        """Removes a book from the database"""
+        book = Book.query.get_or_404(book_id)
+        db.session.delete(book)
+        db.session.commit()
+        return True
+    
     def manage_book_info(self, id, title=None, author=None, price=None, condition=None, grade=None, subject=None, quantity=None):
         """Allows to edit a singular or multiple attributes of a Book"""
         book = Book.query.get_or_404(id)
