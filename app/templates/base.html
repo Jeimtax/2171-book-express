@@ -4,62 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
-<<<<<<< Updated upstream
-    <link rel="stylesheet" href="/static/css/app.css">
-    <title>Book Express</title>
-</head>
-<body>
-    
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for category, message in messages %}
-      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
-
-<div class="d-flex">
-    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-primary vh-100 sticky-top" style="width: 250px;">
-        <a href="/" class="text-white text-decoration-none">
-            <span class="fs-4">Book Express</span>
-        </a>
-        <hr>
-        <ul class="nav nav-pills flex-column mb-auto">
-            <li class="nav-item">
-                <a href="{{ url_for('dashboard.dashboard_page') }}" class="nav-link text-white {% if request.endpoint == 'dashboard.dashboard_page' %}active{% endif %}">
-                    Dashboard
-                </a>
-            </li>
-            <li>
-                <a href="{{ url_for('books.create') }}" class="nav-link text-white {% if request.endpoint == 'books.create' %}active{% endif %}">
-                    Inventory
-                </a>
-            </li>
-            <li>
-                <a href="{{ url_for('index') }}" class="nav-link text-white {% if request.endpoint == 'index' %}active{% endif %}">
-                    Import CSV
-                </a>
-            </li>
-            <li>
-                <a href="{{ url_for('inventory.adjust_page') }}" class="nav-link text-white {% if request.endpoint == 'inventory.adjust_page' %}active{% endif %}">
-                    Adjust Inventory
-                </a>
-            </li>
-            <li>
-                <a href="{{ url_for('orders.manage_orders') }}" class="nav-link text-white {% if request.endpoint == 'orders.manage_orders' %}active{% endif %}">
-                    Manage Orders
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <div class="p-4 w-100">
-        {% block main %}{% endblock %}
-    </div>
-=======
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <title>Book Express</title>
     <style>
@@ -84,422 +28,132 @@
             background: var(--ink);
             color: var(--cream);
             min-height: 100vh;
-            display: flex;
-            overflow-x: hidden;
         }
 
-        /* ── SIDEBAR ─────────────────────────────── */
+        /* Sidebar Navigation */
         .sidebar {
             width: var(--sidebar-w);
             background: var(--ink2);
-            min-height: 100vh;
+            border-right: 1px solid var(--border);
+            height: 100vh;
+            position: fixed;
+            left: 0; top: 0;
             display: flex;
             flex-direction: column;
-            padding: 0;
-            position: sticky;
-            top: 0;
-            flex-shrink: 0;
-            border-right: 1px solid var(--border);
+            padding: 2rem 0;
+            z-index: 100;
         }
 
-        .sidebar-top {
-            padding: 2rem 1.75rem 1.5rem;
-            border-bottom: 1px solid var(--border2);
+        .brand {
+            padding: 0 2rem;
+            margin-bottom: 3rem;
         }
 
-        .brand-mark {
-            font-size: .6rem;
-            font-weight: 500;
-            letter-spacing: .22em;
-            text-transform: uppercase;
-            color: var(--gold);
-            display: block;
-            margin-bottom: .5rem;
-        }
-
-        .brand-name {
+        .brand-text {
             font-family: 'Playfair Display', serif;
             font-size: 1.4rem;
-            font-weight: 600;
-            color: var(--cream);
-            line-height: 1.1;
-            text-decoration: none;
-            display: block;
-        }
-
-        .sidebar-nav {
-            flex: 1;
-            padding: 1.5rem 0;
-            list-style: none;
-        }
-
-        .sidebar-nav li { position: relative; }
-
-        .sidebar-nav .nav-link {
-            display: block;
-            padding: .65rem 1.75rem;
-            font-size: .8rem;
-            font-weight: 400;
-            letter-spacing: .06em;
-            text-transform: uppercase;
-            color: var(--muted);
-            text-decoration: none;
-            transition: color .2s;
-            border-left: 2px solid transparent;
-        }
-
-        .sidebar-nav .nav-link:hover { color: var(--cream); }
-
-        .sidebar-nav .nav-link.active {
             color: var(--gold);
-            border-left: 2px solid var(--gold);
-            background: rgba(200,151,58,0.06);
+            letter-spacing: -0.02em;
         }
 
-        .sidebar-nav .section-label {
-            font-size: .58rem;
-            letter-spacing: .18em;
+        .nav-list { list-style: none; flex: 1; }
+        .section-label {
+            font-size: .55rem;
             text-transform: uppercase;
-            color: #444;
-            padding: 1.2rem 1.75rem .4rem;
-            display: block;
-        }
-
-        .sidebar-bottom {
-            padding: 1.5rem 1.75rem;
-            border-top: 1px solid var(--border2);
-        }
-
-        .user-pill {
-            display: flex;
-            align-items: center;
-            gap: .75rem;
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--gold);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: .7rem;
-            font-weight: 500;
-            color: var(--ink);
-            flex-shrink: 0;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .user-info { flex: 1; min-width: 0; }
-        .user-name { font-size: .8rem; font-weight: 500; color: var(--cream); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .user-role { font-size: .65rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-
-        /* ── MAIN ────────────────────────────────── */
-        .main-content {
-            flex: 1;
-            padding: 2.5rem 3rem;
-            min-width: 0;
-            background: var(--ink);
-        }
-
-        /* ── FLASH MESSAGES ──────────────────────── */
-        .flash-zone { margin-bottom: 1.5rem; }
-
-        .flash-msg {
-            padding: .75rem 1.25rem;
-            border-radius: 0;
-            font-size: .825rem;
-            font-weight: 400;
-            border: none;
-            border-left: 3px solid;
-            margin-bottom: .5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .flash-msg.success { background: rgba(200,151,58,0.1); border-color: var(--gold); color: var(--gold2); }
-        .flash-msg.danger  { background: rgba(180,50,50,0.12); border-color: #b43232; color: #e07070; }
-        .flash-msg.info    { background: rgba(100,140,180,0.1); border-color: #6490b0; color: #90b8d8; }
-        .flash-msg.warning { background: rgba(200,151,58,0.08); border-color: #c8973a; color: #c8973a; }
-
-        .flash-close { background: none; border: none; color: inherit; opacity: .6; cursor: pointer; font-size: 1rem; line-height: 1; padding: 0; }
-
-        /* ── PAGE HEADER ─────────────────────────── */
-        .page-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            margin-bottom: 2.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border2);
-        }
-
-        .page-eyebrow {
-            font-size: .6rem;
             letter-spacing: .2em;
-            text-transform: uppercase;
-            color: var(--gold);
-            margin-bottom: .4rem;
-        }
-
-        .page-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 400;
-            color: var(--cream);
-            line-height: 1.15;
-        }
-
-        .page-sub {
-            font-size: .825rem;
             color: var(--muted);
-            margin-top: .3rem;
-        }
-
-        /* ── CARDS ───────────────────────────────── */
-        .card-dark {
-            background: var(--ink2);
-            border: 1px solid var(--border);
-            border-radius: 0;
-            padding: 1.75rem;
-        }
-
-        /* ── TABLES ──────────────────────────────── */
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: .825rem;
-        }
-
-        .data-table th {
-            font-size: .6rem;
-            letter-spacing: .14em;
-            text-transform: uppercase;
-            color: var(--muted);
-            font-weight: 500;
-            padding: .75rem 1rem;
-            border-bottom: 1px solid var(--border);
-            text-align: left;
-        }
-
-        .data-table td {
-            padding: .9rem 1rem;
-            border-bottom: 1px solid var(--border2);
-            color: #c8c0b0;
-            vertical-align: middle;
-        }
-
-        .data-table tr:last-child td { border-bottom: none; }
-        .data-table tr:hover td { background: rgba(200,151,58,0.03); }
-
-        /* ── BUTTONS ─────────────────────────────── */
-        .btn-primary-dark {
-            display: inline-block;
-            padding: .7rem 1.5rem;
-            background: var(--gold);
-            color: var(--ink);
-            border: none;
-            font-family: 'DM Sans', sans-serif;
-            font-size: .78rem;
-            font-weight: 500;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background .2s, color .2s;
-        }
-
-        .btn-primary-dark:hover { background: var(--gold2); color: var(--ink); }
-
-        .btn-ghost {
-            display: inline-block;
-            padding: .65rem 1.25rem;
-            background: none;
-            color: var(--muted);
-            border: 1px solid var(--border);
-            font-family: 'DM Sans', sans-serif;
-            font-size: .78rem;
-            font-weight: 400;
-            letter-spacing: .06em;
-            text-transform: uppercase;
-            cursor: pointer;
-            text-decoration: none;
-            transition: color .2s, border-color .2s;
-        }
-
-        .btn-ghost:hover { color: var(--cream); border-color: rgba(200,151,58,0.4); }
-
-        /* ── FORM ELEMENTS ───────────────────────── */
-        .field-label {
+            padding: 2rem 2rem .75rem;
             display: block;
-            font-size: .6rem;
-            letter-spacing: .14em;
-            text-transform: uppercase;
-            color: var(--muted);
-            margin-bottom: .5rem;
-            font-weight: 500;
         }
 
-        .field-input {
+        .nav-link {
+            display: block;
+            padding: .75rem 2rem;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: .85rem;
+            transition: all .2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--gold);
+            background: rgba(200,151,58,0.04);
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-w);
+            padding: 3rem 4rem;
+            min-height: 100vh;
+        }
+
+        /* Generic Page Headers */
+        .page-header { margin-bottom: 3rem; border-bottom: 1px solid var(--border2); padding-bottom: 1.5rem; }
+        .page-eyebrow { font-size: .6rem; text-transform: uppercase; letter-spacing: .2em; color: var(--gold); margin-bottom: .5rem; }
+        .page-title { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: .5rem; }
+        .page-sub { font-size: .9rem; color: var(--muted); }
+
+        /* Unified Form Styles */
+        input[type="text"], input[type="number"], input[type="password"], select, textarea {
             width: 100%;
-            padding: .7rem 1rem;
-            background: var(--ink3);
-            border: 1px solid var(--border);
-            color: var(--cream);
+            padding: .8rem 1rem;
+            background: var(--ink) !important;
+            border: 1px solid var(--border) !important;
+            color: var(--cream) !important;
             font-family: 'DM Sans', sans-serif;
-            font-size: .875rem;
             font-weight: 300;
             outline: none;
             transition: border-color .2s;
-            border-radius: 0;
-            -webkit-appearance: none;
         }
+        input:focus { border-color: var(--gold) !important; }
 
-        .field-input:focus { border-color: var(--gold); }
-        .field-input::placeholder { color: #555; }
-
-        /* ── BADGE ───────────────────────────────── */
-        .badge-gold {
-            display: inline-block;
-            padding: .2rem .7rem;
-            background: rgba(200,151,58,0.12);
-            color: var(--gold);
-            font-size: .62rem;
-            font-weight: 500;
-            letter-spacing: .1em;
+        .btn-primary-dark {
+            background: var(--gold);
+            color: var(--ink);
+            border: none;
+            padding: .8rem 1.5rem;
+            font-size: .8rem;
             text-transform: uppercase;
-            border: 1px solid rgba(200,151,58,0.25);
-        }
-
-        .badge-danger {
-            display: inline-block;
-            padding: .2rem .7rem;
-            background: rgba(180,50,50,0.12);
-            color: #e07070;
-            font-size: .62rem;
-            font-weight: 500;
             letter-spacing: .1em;
-            text-transform: uppercase;
-            border: 1px solid rgba(180,50,50,0.25);
-        }
-
-        .badge-ok {
-            display: inline-block;
-            padding: .2rem .7rem;
-            background: rgba(60,140,80,0.1);
-            color: #6ab87e;
-            font-size: .62rem;
             font-weight: 500;
-            letter-spacing: .1em;
-            text-transform: uppercase;
-            border: 1px solid rgba(60,140,80,0.2);
+            cursor: pointer;
+            transition: background .2s;
         }
+        .btn-primary-dark:hover { background: var(--gold2); }
 
-        /* ── DIVIDER ─────────────────────────────── */
-        .rule { border: none; border-top: 1px solid var(--border2); margin: 2rem 0; }
-
-        /* ── SCROLLBAR ───────────────────────────── */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--ink); }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        /* Flash Zone */
+        .flash-zone { position: fixed; top: 2rem; right: 2rem; z-index: 9999; }
+        .flash-msg {
+            background: var(--ink2);
+            border: 1px solid var(--gold);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: .85rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <div class="sidebar-top">
-        <span class="brand-mark">Inventory System</span>
-        <a href="{{ url_for('auth.dashboard') }}" class="brand-name">Book Express</a>
+    <div class="brand">
+        <div class="brand-text">Book Express</div>
     </div>
-
-    <ul class="sidebar-nav">
-        <span class="section-label">Overview</span>
-        <li>
-            <a href="{{ url_for('auth.dashboard') }}"
-               class="nav-link {% if request.endpoint == 'auth.dashboard' %}active{% endif %}">
-                Dashboard
-            </a>
-        </li>
-
-        <span class="section-label">Inventory</span>
-        <li>
-            <a href="{{ url_for('books.create') }}"
-               class="nav-link {% if request.endpoint == 'books.create' %}active{% endif %}">
-                Book Catalog
-            </a>
-        </li>
-        <li>
-            <a href="{{ url_for('inventory.adjust_page') }}"
-               class="nav-link {% if request.endpoint == 'inventory.adjust_page' %}active{% endif %}">
-                Adjust Stock
-            </a>
-        </li>
-        <li>
-            <a href="{{ url_for('stock.low_stocks') }}"
-               class="nav-link {% if request.endpoint == 'stock.low_stocks' %}active{% endif %}">
-                Low Stock
-            </a>
-        </li>
-
-        <span class="section-label">Operations</span>
-        <li>
-            <a href="{{ url_for('orders.manage_orders') }}"
-               class="nav-link {% if request.endpoint == 'orders.manage_orders' %}active{% endif %}">
-                Orders
-            </a>
-        </li>
-        <li>
-            <a href="{{ url_for('upload.upload_page') }}"
-               class="nav-link {% if request.endpoint == 'upload.upload_page' %}active{% endif %}">
-                Import Sales
-            </a>
-        </li>
-
+    <ul class="nav-list">
+        <span class="section-label">Management</span>
+        <li><a href="{{ url_for('dashboard.dashboard_page') }}" class="nav-link {% if request.endpoint == 'dashboard.dashboard_page' %}active{% endif %}">Dashboard</a></li>
+        <li><a href="{{ url_for('books.create') }}" class="nav-link {% if 'books' in request.endpoint %}active{% endif %}">Inventory Catalog</a></li>
+        <li><a href="{{ url_for('inventory.adjust_page') }}" class="nav-link {% if 'inventory' in request.endpoint %}active{% endif %}">Manual Adjust</a></li>
+        <li><a href="{{ url_for('orders.manage_orders') }}" class="nav-link {% if 'orders' in request.endpoint %}active{% endif %}">Supplier Orders</a></li>
+        <li><a href="{{ url_for('upload.index') }}" class="nav-link {% if 'upload' in request.endpoint %}active{% endif %}">Import Sales</a></li>
+        
         <span class="section-label">Account</span>
-        <li>
-            <a href="{{ url_for('auth.change_password') }}"
-               class="nav-link {% if request.endpoint == 'auth.change_password' %}active{% endif %}">
-                Change Password
-            </a>
-        </li>
-        <li>
-            <a href="{{ url_for('auth.logout') }}" class="nav-link">Logout</a>
-        </li>
+        <li><a href="{{ url_for('auth.logout') }}" class="nav-link">Logout</a></li>
     </ul>
-
-    {% if current_user.is_authenticated %}
-    <div class="sidebar-bottom">
-        <div class="user-pill">
-            <div class="user-avatar">{{ current_user.username[0].upper() }}</div>
-            <div class="user-info">
-                <div class="user-name">{{ current_user.username }}</div>
-                <div class="user-role">{{ current_user.role }}</div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
 </div>
 
 <div class="main-content">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="flash-zone">
-          {% for category, message in messages %}
-            <div class="flash-msg {{ category }}">
-              <span>{{ message }}</span>
-              <button class="flash-close" onclick="this.parentElement.remove()">&times;</button>
-            </div>
-          {% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
-
-    {% block main %}{% endblock %}
->>>>>>> Stashed changes
-</div>
-
-<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
-</body>
-</html>
+    {% with messages = get_flashed_messages(with_categories=true) %}\
+      {% if messages
