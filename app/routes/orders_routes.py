@@ -15,14 +15,13 @@ def manage_orders():
     book_id_error = None
 
     if request.method == 'POST' and form.validate_on_submit():
-        raw_book_id = (form.book_id.data or '').strip()
+        selected_book_id = form.book_id.data
         linked_book = None
 
-        if raw_book_id:
-            if raw_book_id.isdigit():
-                linked_book = Book.query.get(int(raw_book_id))
+        if selected_book_id and selected_book_id != 0:
+            linked_book = Book.query.get(selected_book_id)
             if not linked_book:
-                book_id_error = 'ID not found'
+                book_id_error = 'Linked book not found'
 
         supplier = Supplier(
             name=form.supplier_name.data.strip(),

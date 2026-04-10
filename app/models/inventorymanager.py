@@ -5,7 +5,7 @@ class InventoryManager:
     
     def add_book(self, title, author, price, grade, subject, quantity):
         """Adds a Book to the database"""
-        book = Book( title, author, price, grade, subject, quantity)
+        book = Book(title=title, author=author, price=price, grade=grade, subject=subject, quantity=quantity)
         db.session.add(book)
         db.session.commit()
         return book
@@ -18,19 +18,16 @@ class InventoryManager:
         db.session.commit()
         return True
     
-    
-    @staticmethod
-    def manage_book_info(id, data):
+    def manage_book_info(self, id, title=None, author=None, price=None, grade=None, subject=None, quantity=None):
         """Allows to edit a singular or multiple attributes of a Book"""
         book = Book.query.get_or_404(id)
 
-        book.title = data.get('title')
-        book.author = data.get('author')
-        book.price = data.get('price')
-        book.condition = data.get('condition')
-        book.grade = data.get('grade')
-        book.subject = data.get('subject')
-        book.quantity = data.get('quantity')
+        if title is not None: book.title = title
+        if author is not None: book.author = author
+        if price is not None: book.price = price
+        if grade is not None: book.grade = grade
+        if subject is not None: book.subject = subject
+        if quantity is not None: book.quantity = quantity
         
         db.session.commit()
         return book
@@ -38,19 +35,19 @@ class InventoryManager:
     def search_books(self, title=None, author=None, grade=None, subject=None, max_price=None):
         query = Book.query
 
-        if title:
+        if title and title.strip():
             query = query.filter(Book.title.ilike(f"%{title}%"))
 
-        if author:
+        if author and author.strip():
             query = query.filter(Book.author.ilike(f"%{author}%"))
 
-        if grade:
+        if grade and grade.strip():
             query = query.filter(Book.grade == grade)
 
-        if subject:
+        if subject and subject.strip():
             query = query.filter(Book.subject == subject)
 
-        if max_price is not None and max_price != "":
+        if max_price:
             try:
                 price_value = float(max_price)
                 query = query.filter(Book.price <= price_value)

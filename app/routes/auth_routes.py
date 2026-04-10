@@ -26,7 +26,7 @@ def role_required(role):
 def register():
     if current_user.is_authenticated:
         flash('You are already logged in.', 'info')
-        return redirect(url_for('books.create')) # Redirect to your main index route
+        return redirect(url_for('dashboard.dashboard_page')) # Redirect to dashboard
 
     form = RegistrationForm()
 
@@ -54,7 +54,7 @@ def register():
 def login():
     if current_user.is_authenticated:
         flash('You are already logged in.', 'info')
-        return redirect(url_for('books.create')) # Redirect to your main index route
+        return redirect(url_for('dashboard.dashboard_page')) # Redirect to dashboard
 
     if request.method == 'POST':
         username = request.form['username']
@@ -108,8 +108,3 @@ def change_password():
         return redirect(url_for('dashboard.dashboard_page'))
         
     return render_template('change_password.html')
-
-@auth_bp.route('/dashboard')
-@login_required
-def dashboard():
-    return render_template('dashboard.html', user=current_user)
