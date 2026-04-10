@@ -35,8 +35,8 @@ def update(id):
     form = AddBook(obj=book) # This pre-fills the form with current book info
     
     if form.validate_on_submit():
-        InventoryManager.manage_book_info(
-            id,
+        inventory_manager.manage_book_info(
+            id=id,
             title=form.title.data,
             author=form.author.data,
             price=form.price.data,

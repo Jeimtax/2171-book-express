@@ -18,8 +18,7 @@ class InventoryManager:
         db.session.commit()
         return True
     
-    @staticmethod
-    def manage_book_info(id, title=None, author=None, price=None, grade=None, subject=None, quantity=None):
+    def manage_book_info(self, id, title=None, author=None, price=None, grade=None, subject=None, quantity=None):
         """Allows to edit a singular or multiple attributes of a Book"""
         book = Book.query.get_or_404(id)
 

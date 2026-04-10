@@ -68,8 +68,39 @@
     <a class="btn-logout" href="{{ url_for('auth.logout') }}">Logout</a>
 </div>
 
-<div class="dashboard-container">
+<!-- Search and Filter Bar -->
+<div class="card mb-4 mt-4" style="width: 100%; display: block;">
+    <form method="GET" action="{{ url_for('dashboard.dashboard_page') }}" class="row g-3">
+        <div class="col-md-3">
+            <label class="form-label small text-uppercase fw-bold text-muted">Title</label>
+            <input type="text" name="title" class="form-control" placeholder="Search title..." value="{{ request.args.get('title', '') }}">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small text-uppercase fw-bold text-muted">Author</label>
+            <input type="text" name="author" class="form-control" placeholder="Search author..." value="{{ request.args.get('author', '') }}">
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small text-uppercase fw-bold text-muted">Grade</label>
+            <select name="grade" class="form-select">
+                <option value="">All</option>
+                <option value="9" {% if request.args.get('grade') == '9' %}selected{% endif %}>Grade 9</option>
+                <option value="10" {% if request.args.get('grade') == '10' %}selected{% endif %}>Grade 10</option>
+                <option value="11" {% if request.args.get('grade') == '11' %}selected{% endif %}>Grade 11</option>
+                <option value="12" {% if request.args.get('grade') == '12' %}selected{% endif %}>Grade 12</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small text-uppercase fw-bold text-muted">Max Price</label>
+            <input type="number" step="0.01" name="max_price" class="form-control" placeholder="0.00" value="{{ request.args.get('max_price', '') }}">
+        </div>
+        <div class="col-md-2 d-flex align-items-end gap-1">
+            <button type="submit" class="btn btn-dark w-100">Filter</button>
+            <a href="{{ url_for('dashboard.dashboard_page') }}" class="btn btn-outline-secondary">Reset</a>
+        </div>
+    </form>
+</div>
 
+<div class="dashboard-container">
     <div class="card">
         <h3>Total Books</h3>
         <p id="totalBooks">Loading...</p>
@@ -79,13 +110,49 @@
         <h3>Total Value</h3>
         <p id="totalValue">Loading...</p>
     </div>
+</div>
 
-        </ul>
+<!-- Filtered Books Table -->
+<div class="mt-4">
+    <div class="dash-card" style="max-width: 100%;">
+        <h5 class="mb-3">Inventory Results</h5>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr style="font-size: .7rem; text-transform: uppercase; color: #888;">
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Grade</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr style="font-size: .875rem;">
+                        <td><strong>{{ book.title }}</strong></td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.grade }}</td>
+                        <td>${{ "%.2f"|format(book.price) }}</td>
+                        <td>{{ book.quantity }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">No books found matching your criteria.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script>
-fetch('/api/dashboard')
+/** 
+ * Fetches dashboard stats. We append window.location.search so that 
+ * the API results match the filtered table view.
+ */
+fetch('/api/dashboard' + window.location.search)
     .then(res => res.json())
     .then(data => {
         document.getElementById('totalBooks').innerText = data.total_books;
