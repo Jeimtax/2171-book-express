@@ -14,11 +14,12 @@
     {% for category, message in messages %}
       <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
         {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     {% endfor %}
   {% endif %}
 {% endwith %}
+
 <div class="d-flex">
     <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-primary vh-100 sticky-top" style="width: 250px;">
         <a href="/" class="text-white text-decoration-none">
@@ -27,21 +28,32 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a href="{{url_for('dashboard.dashboard_page')}}" class="nav-link text-white">Dashboard</a>
+                <a href="{{ url_for('dashboard.dashboard_page') }}" class="nav-link text-white {% if request.endpoint == 'dashboard.dashboard_page' %}active{% endif %}">
+                    Dashboard
+                </a>
             </li>
             <li>
-                <a href="{{ url_for('books.create')}}" class="nav-link text-white">Inventory</a>
+                <a href="{{ url_for('books.create') }}" class="nav-link text-white {% if request.endpoint == 'books.create' %}active{% endif %}">
+                    Inventory
+                </a>
             </li>
             <li>
-                <a href="{{ url_for('index') }}" class="nav-link text-white">Import CSV</a>
+                <a href="{{ url_for('index') }}" class="nav-link text-white {% if request.endpoint == 'index' %}active{% endif %}">
+                    Import CSV
+                </a>
             </li>
             <li>
-                <a href="{{ url_for('inventory.adjust_page')}}" class="nav-link text-white">Adjust Inventory</a>
+                <a href="{{ url_for('inventory.adjust_page') }}" class="nav-link text-white {% if request.endpoint == 'inventory.adjust_page' %}active{% endif %}">
+                    Adjust Inventory
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('orders.manage_orders') }}" class="nav-link text-white {% if request.endpoint == 'orders.manage_orders' %}active{% endif %}">
+                    Manage Orders
+                </a>
             </li>
         </ul>
     </div>
-
-    
 
     <div class="p-4 w-100">
         {% block main %}{% endblock %}
