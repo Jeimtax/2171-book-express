@@ -1,12 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, SelectField, StringField, SubmitField, TextAreaField, PasswordField
-from wtforms.validators import DataRequired, Length, NumberRange
+from wtforms import IntegerField, SelectField, StringField, SubmitField, TextAreaField, PasswordField, FloatField
+from wtforms.validators import DataRequired, Length, NumberRange, Optional
 from app.models.book import Book
 
 class AddBook(FlaskForm):
     title = StringField('Book Title',validators=[DataRequired(), Length(max=120)])
     author = StringField('Book Author',validators=[DataRequired(), Length(max=120)])
-    price =StringField('Price',validators=[DataRequired(), Length(max=120)])
+    price = FloatField('Price', validators=[DataRequired()])
     grade = StringField('Grade',validators=[DataRequired(), Length(max=120)])
     subject = StringField('Subject',validators=[DataRequired(), Length(max=120)])
     quantity = IntegerField('Quantity',validators=[DataRequired(), NumberRange(min=1)])

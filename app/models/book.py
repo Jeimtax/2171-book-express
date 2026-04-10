@@ -25,7 +25,6 @@ class Book (db.Model):
             'title': self.title,
             'author': self.author,
             'price': self.price,
-            'condition': self.condition,
             'grade': self.grade,
             'subject': self.subject,
             'quantity': self.quantity
@@ -33,6 +32,5 @@ class Book (db.Model):
 
 
     def __repr__(self):
-        return f' Title:{self.title}\n Author:{self.author}\n Grade: {self.grade}\n Subject: {self.subject}\n ${self.price}\n Condition:{self.condition}\n Quantity: {self.quantity}\n'  
+        return f' Title:{self.title}\n Author:{self.author}\n Grade: {self.grade}\n Subject: {self.subject}\n ${self.price}\n Quantity: {self.quantity}\n'  
     
-

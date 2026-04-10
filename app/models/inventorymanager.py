@@ -18,7 +18,8 @@ class InventoryManager:
         db.session.commit()
         return True
     
-    def manage_book_info(self, id, title=None, author=None, price=None, grade=None, subject=None, quantity=None):
+    @staticmethod
+    def manage_book_info(id, title=None, author=None, price=None, grade=None, subject=None, quantity=None):
         """Allows to edit a singular or multiple attributes of a Book"""
         book = Book.query.get_or_404(id)
 
@@ -47,10 +48,10 @@ class InventoryManager:
         query = Book.query
 
         if title:
-            query = query.filter(Book.title == title)
+            query = query.filter(Book.title.ilike(f"%{title}%"))
 
         if author:
-            query = query.filter(Book.author == author)
+            query = query.filter(Book.author.ilike(f"%{author}%"))
 
         if grade:
             query = query.filter(Book.grade == grade)

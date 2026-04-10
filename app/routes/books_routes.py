@@ -3,7 +3,6 @@ from app import db
 from app.models.book import Book
 from app.models.inventorymanager import InventoryManager
 from app.forms import AddBook
-from app.models.inventorymanager import InventoryManager
 
 books_bp = Blueprint('books', __name__, url_prefix='/books')
 inventory_manager = InventoryManager()
@@ -36,7 +35,15 @@ def update(id):
     form = AddBook(obj=book) # This pre-fills the form with current book info
     
     if form.validate_on_submit():
-        InventoryManager.manage_book_info(id, form.data)
+        InventoryManager.manage_book_info(
+            id,
+            title=form.title.data,
+            author=form.author.data,
+            price=form.price.data,
+            grade=form.grade.data,
+            subject=form.subject.data,
+            quantity=form.quantity.data
+        )
         flash(f'Updated "{book.title}" successfully.', 'success')
         return redirect(url_for('books.create'))
     

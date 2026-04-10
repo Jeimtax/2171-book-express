@@ -73,7 +73,7 @@ def login():
 
             flash(f'Logged in as {user.username}!', 'success')
             next_page = request.args.get('next')
-            return redirect(next_page or url_for('auth.dashboard')) # Redirect to next page or main index
+            return redirect(next_page or url_for('dashboard.dashboard_page')) # Redirect to next page or main index
         else:
             flash('Login failed. Check your username and password.', 'danger')
 
@@ -105,7 +105,7 @@ def change_password():
         current_user.password = bcrypt.generate_password_hash(new_password).decode('utf-8')
         db.session.commit()
         flash('Password updated successfully.', 'success')
-        return redirect(url_for('auth.dashboard'))
+        return redirect(url_for('dashboard.dashboard_page'))
         
     return render_template('change_password.html')
 
