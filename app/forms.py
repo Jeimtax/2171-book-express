@@ -7,7 +7,6 @@ class AddBook(FlaskForm):
     title = StringField('Book Title',validators=[DataRequired(), Length(max=120)])
     author = StringField('Book Author',validators=[DataRequired(), Length(max=120)])
     price =StringField('Price',validators=[DataRequired(), Length(max=120)])
-    condition = StringField('Condition',validators=[DataRequired(), Length(max=120)])
     grade = StringField('Grade',validators=[DataRequired(), Length(max=120)])
     subject = StringField('Subject',validators=[DataRequired(), Length(max=120)])
     quantity = IntegerField('Quantity',validators=[DataRequired(), NumberRange(min=1)])

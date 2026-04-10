@@ -3,14 +3,22 @@ from app import db
 
 class InventoryManager:
     
-    def add_book(self, title, author, price, condition, grade, subject, quantity):
+    def add_book(self, title, author, price, grade, subject, quantity):
         """Adds a Book to the database"""
-        book = Book( title, author, price, condition, grade, subject, quantity)
+        book = Book( title, author, price, grade, subject, quantity)
         db.session.add(book)
         db.session.commit()
         return book
     
-    def manage_book_info(self, id, title=None, author=None, price=None, condition=None, grade=None, subject=None, quantity=None):
+    @staticmethod
+    def delete_book(book_id):
+        """Removes a book from the database"""
+        book = Book.query.get_or_404(book_id)
+        db.session.delete(book)
+        db.session.commit()
+        return True
+    
+    def manage_book_info(self, id, title=None, author=None, price=None, grade=None, subject=None, quantity=None):
         """Allows to edit a singular or multiple attributes of a Book"""
         book = Book.query.get_or_404(id)
 
@@ -23,9 +31,6 @@ class InventoryManager:
 
         if price is not None:
             book.price = price
-
-        if condition is not None:
-            book.condition = condition
 
         if grade is not None:
             book.grade = grade
