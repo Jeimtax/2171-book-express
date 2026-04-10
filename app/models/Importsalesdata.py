@@ -56,7 +56,7 @@ class ImportSalesData:
             if csv_reader.fieldnames is None or not self._validate_headers(csv_reader.fieldnames):
                 raise ValueError("CSV must contain columns: date, product_id, quantity, price")
             
-            for row_num, row in enumerate(csv_reader, start=2):  # Start at 2 (header is 1)
+            for row_num, row in enumerate(csv_reader, start=2):  
                 try:
                     processed = self.process_row(row)
                     sales_data.append(processed)

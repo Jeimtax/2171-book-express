@@ -1,16 +1,20 @@
 import os
 import secrets
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, request, jsonify, render_template, flash, redirect, url_for
 from werkzeug.utils import secure_filename
 from app import db, app
 from app.models.Importsalesdata import Sales, ImportSalesData
 
 upload_bp = Blueprint('upload', __name__, url_prefix='/upload')
 
-@app.route('/')
-def index():
+@upload_bp.route('/')
+def upload_page():
     """Serve CSV upload form"""
     return render_template('upload.html')
+
+@app.route('/') #handles in app/__init__.py or another main entry point
+def home_redirect():
+    return redirect(url_for('auth.login')) #redirects to the login page
 
 
 def allowed_file(filename):
@@ -39,14 +43,16 @@ def upload_csv():
     """Handle CSV file upload and import sales data"""
     try:
         if 'csv' not in request.files:
-            return jsonify({'error': 'No file part in request'}), 400
+            flash('No file part in request', 'danger')
+            return redirect(url_for('upload.upload_page'))
         
         file = request.files['csv']
         
         try:
             unique_filename, original_filename = secure_upload_file(file)
         except ValueError as e:
-            return jsonify({'error': str(e)}), 400
+            flash(str(e), 'danger')
+            return redirect(url_for('upload.upload_page'))
         
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
         
@@ -57,22 +63,21 @@ def upload_csv():
             if not result['success']:
                 if os.path.exists(filepath):
                     os.remove(filepath)
-                return jsonify(result), 400
+                flash(result.get('message', 'Import failed'), 'danger')
+                return redirect(url_for('upload.upload_page'))
             
-            return jsonify({
-                'success': True,
-                'message': result['message'],
-                'count': result['count'],
-                'filename': original_filename
-            }), 201
+            flash(f"Successfully imported {result['count']} records from {original_filename}!", 'success')
+            return redirect(url_for('upload.upload_page'))
             
         except Exception as e:
             if os.path.exists(filepath):
                 os.remove(filepath)
-            return jsonify({'error': f'Import failed: {str(e)}'}), 500
+            flash(f'Import failed: {str(e)}', 'danger')
+            return redirect(url_for('upload.upload_page'))
     
     except Exception as e:
-        return jsonify({'error': f'Server error: {str(e)}'}), 500
+        flash(f'Server error: {str(e)}', 'danger')
+        return redirect(url_for('upload.upload_page'))
 
 
 @upload_bp.route('/sales', methods=['GET'])

@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block main %}
+<style>
+    .section-title {
+        font-size: 1rem;
+        font-weight: 500;
+        margin-bottom: .25rem;
+    }
+
+    .section-sub {
+        font-size: .875rem;
+        color: #888;
+        margin-bottom: 2rem;
+    }
+
+    .stock-table-wrap {
+        background: #fff;
+        border: 1px solid #e0ddd8;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .stock-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: .875rem;
+    }
+
+    .stock-table thead tr {
+        border-bottom: 1px solid #e0ddd8;
+    }
+
+    .stock-table th {
+        padding: .75rem 1.25rem;
+        text-align: left;
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: #888;
+    }
+
+    .stock-table th:last-child { text-align: right; }
+
+    .stock-table td {
+        padding: .9rem 1.25rem;
+        border-bottom: 1px solid #f0ede8;
+        color: #333;
+        vertical-align: middle;
+    }
+
+    .stock-table tr:last-child td { border-bottom: none; }
+
+    .stock-table td:last-child { text-align: right; }
+
+    .qty-value { color: #c0392b; font-weight: 600; }
+    .qty-threshold { color: #aaa; }
+
+    .badge-warning {
+        display: inline-block;
+        padding: .2rem .6rem;
+        border-radius: 3px;
+        background: #fef3c7;
+        color: #92400e;
+        font-size: .65rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+    }
+
+    .btn-reorder {
+        padding: .4rem .9rem;
+        background: #111;
+        color: #faf9f7;
+        border: none;
+        border-radius: 2px;
+        font-family: 'Outfit', sans-serif;
+        font-size: .8rem;
+        font-weight: 500;
+        cursor: pointer;
+        letter-spacing: .03em;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .empty-state {
+        padding: 3rem 1.25rem;
+        text-align: center;
+        color: #aaa;
+        font-size: .875rem;
+    }
+</style>
+
+<div class="section-title">Low Stock Alerts</div>
+<div class="section-sub">Items that have fallen below their configured stock threshold.</div>
+
+<hr style="border-color:#e0ddd8; margin-bottom:1.5rem;">
+
+<div class="stock-table-wrap">
+    <table class="stock-table">
+        <thead>
+            <tr>
+                <th>Item Name</th>
+                <th>Qty / Threshold</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>{{ book.title }}</td>
+                <td>
+                    <span class="qty-value">{{ book.quantity }}</span>
+                    <span class="qty-threshold">/ 10</span>
+                </td>
+                <td><span class="badge-warning">Needs Attention</span></td>
+                <td>
+                    <a href="{{ url_for('books.create') }}" class="btn-reorder">Reorder</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="empty-state">All stock levels are healthy.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
