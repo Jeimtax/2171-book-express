@@ -27,133 +27,156 @@
             font-weight: 300;
             background: var(--ink);
             color: var(--cream);
+            display: flex;
             min-height: 100vh;
         }
 
-        /* Sidebar Navigation */
+        /* --- Sidebar --- */
         .sidebar {
             width: var(--sidebar-w);
             background: var(--ink2);
             border-right: 1px solid var(--border);
-            height: 100vh;
-            position: fixed;
-            left: 0; top: 0;
             display: flex;
             flex-direction: column;
-            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
             z-index: 100;
         }
 
-        .brand {
-            padding: 0 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .brand-text {
+        .sidebar-brand {
+            padding: 2.5rem 1.75rem;
             font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            color: var(--gold);
+            font-size: 1.25rem;
             letter-spacing: -0.02em;
+            color: var(--gold);
         }
 
-        .nav-list { list-style: none; flex: 1; }
+        .nav-list { list-style: none; padding: 0 0.75rem; flex: 1; }
+
         .section-label {
-            font-size: .55rem;
-            text-transform: uppercase;
-            letter-spacing: .2em;
-            color: var(--muted);
-            padding: 2rem 2rem .75rem;
             display: block;
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--muted);
+            margin: 1.5rem 1rem 0.5rem;
+            font-weight: 500;
         }
 
         .nav-link {
             display: block;
-            padding: .75rem 2rem;
+            padding: 0.7rem 1rem;
             color: var(--muted);
             text-decoration: none;
-            font-size: .85rem;
-            transition: all .2s;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            border-left: 2px solid transparent;
         }
 
-        .nav-link:hover, .nav-link.active {
-            color: var(--gold);
-            background: rgba(200,151,58,0.04);
+        .nav-link:hover { color: var(--gold); background: rgba(200,151,58,0.04); }
+        .nav-link.active {
+            color: var(--cream);
+            background: rgba(200,151,58,0.08);
+            border-left-color: var(--gold);
         }
 
+        /* --- Main Content --- */
         .main-content {
             margin-left: var(--sidebar-w);
+            flex: 1;
             padding: 3rem 4rem;
-            min-height: 100vh;
+            max-width: 1400px;
         }
 
-        /* Generic Page Headers */
-        .page-header { margin-bottom: 3rem; border-bottom: 1px solid var(--border2); padding-bottom: 1.5rem; }
-        .page-eyebrow { font-size: .6rem; text-transform: uppercase; letter-spacing: .2em; color: var(--gold); margin-bottom: .5rem; }
-        .page-title { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: .5rem; }
-        .page-sub { font-size: .9rem; color: var(--muted); }
-
-        /* Unified Form Styles */
-        input[type="text"], input[type="number"], input[type="password"], select, textarea {
-            width: 100%;
-            padding: .8rem 1rem;
-            background: var(--ink) !important;
-            border: 1px solid var(--border) !important;
-            color: var(--cream) !important;
-            font-family: 'DM Sans', sans-serif;
-            font-weight: 300;
-            outline: none;
-            transition: border-color .2s;
+        .flash-zone { margin-bottom: 2rem; }
+        .flash-msg {
+            padding: 1rem;
+            background: var(--ink2);
+            border: 1px solid var(--border);
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
         }
-        input:focus { border-color: var(--gold) !important; }
+        .flash-msg.success { border-left: 3px solid #6ab87e; }
+        .flash-msg.error { border-left: 3px solid #e07070; }
 
         .btn-primary-dark {
             background: var(--gold);
             color: var(--ink);
             border: none;
-            padding: .8rem 1.5rem;
-            font-size: .8rem;
-            text-transform: uppercase;
-            letter-spacing: .1em;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.8rem;
             font-weight: 500;
             cursor: pointer;
-            transition: background .2s;
+            transition: background 0.2s;
         }
         .btn-primary-dark:hover { background: var(--gold2); }
-
-        /* Flash Zone */
-        .flash-zone { position: fixed; top: 2rem; right: 2rem; z-index: 9999; }
-        .flash-msg {
-            background: var(--ink2);
-            border: 1px solid var(--gold);
-            padding: 1rem 1.5rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            font-size: .85rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <div class="brand">
-        <div class="brand-text">Book Express</div>
-    </div>
+    <div class="sidebar-brand">Book Express</div>
+    
     <ul class="nav-list">
+        <span class="section-label">Inventory</span>
+        <li>
+            <a href="{{ url_for('dashboard.dashboard_page') }}" 
+               class="nav-link {% if request.endpoint == 'dashboard.dashboard_page' %}active{% endif %}">
+                Dashboard
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('books.create') }}" 
+               class="nav-link {% if request.endpoint == 'books.create' %}active{% endif %}">
+                Catalog
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('inventory.adjust_page') }}" 
+               class="nav-link {% if request.endpoint == 'inventory.adjust_page' %}active{% endif %}">
+                Adjust Stock
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('upload.index') }}" 
+               class="nav-link {% if request.endpoint == 'upload.index' %}active{% endif %}">
+                Import Sales
+            </a>
+        </li>
+
         <span class="section-label">Management</span>
-        <li><a href="{{ url_for('dashboard.dashboard_page') }}" class="nav-link {% if request.endpoint == 'dashboard.dashboard_page' %}active{% endif %}">Dashboard</a></li>
-        <li><a href="{{ url_for('books.create') }}" class="nav-link {% if 'books' in request.endpoint %}active{% endif %}">Inventory Catalog</a></li>
-        <li><a href="{{ url_for('inventory.adjust_page') }}" class="nav-link {% if 'inventory' in request.endpoint %}active{% endif %}">Manual Adjust</a></li>
-        <li><a href="{{ url_for('orders.manage_orders') }}" class="nav-link {% if 'orders' in request.endpoint %}active{% endif %}">Supplier Orders</a></li>
-        <li><a href="{{ url_for('upload.index') }}" class="nav-link {% if 'upload' in request.endpoint %}active{% endif %}">Import Sales</a></li>
-        
+        <li>
+            <a href="{{ url_for('orders.manage_orders') }}" 
+               class="nav-link {% if request.endpoint == 'orders.manage_orders' %}active{% endif %}">
+                Supplier Orders
+            </a>
+        </li>
+
         <span class="section-label">Account</span>
-        <li><a href="{{ url_for('auth.logout') }}" class="nav-link">Logout</a></li>
+        <li><a href="#" class="nav-link">Settings</a></li>
+        <li><a href="#" class="nav-link">Logout</a></li>
     </ul>
 </div>
 
 <div class="main-content">
-    {% with messages = get_flashed_messages(with_categories=true) %}\
-      {% if messages
+    {% with messages = get_flashed_messages(with_categories=true) % Rose %}
+      {% if messages %}
+        <div class="flash-zone">
+          {% for category, message in messages %}
+            <div class="flash-msg {{ category }}">
+              <span>{{ message }}</span>
+              <button class="flash-close" style="background:none; border:none; color:var(--muted); cursor:pointer;" onclick="this.parentElement.remove()">&times;</button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block main %}{% endblock %}
+</div>
+
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+</body>
+</html>
