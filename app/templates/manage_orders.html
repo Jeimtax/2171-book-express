@@ -1,364 +1,242 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Express - Manage Orders</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            color: #1f2937;
-            margin: 0;
-            padding: 2rem;
-        }
+{% extends "base.html" %}
 
-        .page {
-            max-width: 980px;
-            margin: 0 auto;
-        }
+{% block main %}
 
-        h1 {
-            margin-bottom: 0.5rem;
-        }
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1">Manage Orders</h2>
+        <p class="text-muted mb-0">Create purchase orders and confirm deliveries to update stock automatically.</p>
+    </div>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createOrderModal">
+        + New Order
+    </button>
+</div>
 
-        .intro {
-            margin-bottom: 1.75rem;
-            color: #4b5563;
-        }
 
-        .card {
-            background: #ffffff;
-            border: 1px solid #d1d5db;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.05);
-        }
-
-        .form-row {
-            display: grid;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        label {
-            display: block;
-            font-size: 0.95rem;
-            margin-bottom: 0.4rem;
-            font-weight: 600;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 0.85rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            background: #f9fafb;
-            box-sizing: border-box;
-        }
-
-        textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        button[type="submit"] {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 0.95rem 1.25rem;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .message {
-            color: #047857;
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
-
-        .field-error {
-            color: #b91c1c;
-            font-size: 0.9rem;
-            margin-top: 0.35rem;
-        }
-
-        /* Order list */
-        .order-item {
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .order-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-bottom: 0.5rem;
-        }
-
-        .order-title {
-            font-size: 1rem;
-            font-weight: 700;
-        }
-
-        .order-meta {
-            color: #6b7280;
-            font-size: 0.9rem;
-        }
-
-        .supplier-info,
-        .items-info {
-            margin-top: 0.5rem;
-            line-height: 1.7;
-            font-size: 0.95rem;
-        }
-
-        .no-orders {
-            color: #6b7280;
-            margin-top: 1rem;
-        }
-
-        /* Status badge */
-        .status-badge {
-            display: inline-block;
-            font-size: 0.72rem;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            padding: 0.2rem 0.6rem;
-            border-radius: 999px;
-        }
-
-        .status-badge.pending {
-            background: #fef9c3;
-            color: #854d0e;
-        }
-
-        .status-badge.delivered {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        /* Confirm delivery button */
-        .btn-confirm {
-            background: #16a34a;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 0.45rem 1rem;
-            font-size: 0.875rem;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background 0.15s;
-        }
-
-        .btn-confirm:hover {
-            background: #15803d;
-        }
-
-        .btn-confirm:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
-
-        /* Inline feedback */
-        .delivery-msg {
-            font-size: 0.85rem;
-            margin-top: 0.4rem;
-            font-weight: 500;
-        }
-
-        .delivery-msg.success { color: #15803d; }
-        .delivery-msg.error   { color: #b91c1c; }
-    </style>
-</head>
-<body>
-    <div class="page">
-        <h1>Manage Orders</h1>
-        <p class="intro">Create new orders with supplier details and see all saved orders below.</p>
-
-        <!-- Create Order Form -->
-        <div class="card">
-            {% if message %}
-                <div class="message">{{ message }}</div>
-            {% endif %}
+<!-- ── Create Order Modal ──────────────────────────────────────────── -->
+<div class="modal fade" id="createOrderModal" tabindex="-1" aria-labelledby="createOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-semibold" id="createOrderModalLabel">Create New Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
             <form method="POST" action="{{ url_for('orders.manage_orders') }}">
                 {{ form.hidden_tag() }}
+                <div class="modal-body">
 
-                <div class="form-row">
-                    <div>
-                        <label for="supplier_name">Supplier Name</label>
-                        {{ form.supplier_name(id='supplier_name') }}
-                        {% for error in form.supplier_name.errors %}
-                            <div class="field-error">{{ error }}</div>
-                        {% endfor %}
+                    {% if message %}
+                        <div class="alert alert-success">{{ message }}</div>
+                    {% endif %}
+
+                    <h6 class="text-muted text-uppercase fw-semibold mb-3" style="font-size:.75rem; letter-spacing:.08em;">Supplier Details</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Supplier Name</label>
+                            {{ form.supplier_name(class="form-control", id="supplier_name") }}
+                            {% for error in form.supplier_name.errors %}
+                                <div class="text-danger small mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Phone Number</label>
+                            {{ form.supplier_phone(class="form-control", id="supplier_phone") }}
+                            {% for error in form.supplier_phone.errors %}
+                                <div class="text-danger small mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Supplier Address</label>
+                            {{ form.supplier_address(class="form-control", id="supplier_address", rows=2) }}
+                            {% for error in form.supplier_address.errors %}
+                                <div class="text-danger small mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
                     </div>
-                    <div>
-                        <label for="supplier_phone">Phone Number</label>
-                        {{ form.supplier_phone(id='supplier_phone') }}
-                        {% for error in form.supplier_phone.errors %}
-                            <div class="field-error">{{ error }}</div>
-                        {% endfor %}
+
+                    <h6 class="text-muted text-uppercase fw-semibold mb-3" style="font-size:.75rem; letter-spacing:.08em;">Book Details</h6>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Linked Book <span class="text-muted fw-normal">(optional)</span></label>
+                            {{ form.book_id(class="form-select", id="book_id") }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Book Title</label>
+                            {{ form.title(class="form-control", id="title") }}
+                            {% for error in form.title.errors %}
+                                <div class="text-danger small mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Author</label>
+                            {{ form.author(class="form-control", id="author") }}
+                            {% for error in form.author.errors %}
+                                <div class="text-danger small mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Quantity</label>
+                            {{ form.quantity(class="form-control", id="quantity") }}
+                            {% for error in form.quantity.errors %}
+                                <div class="text-danger small mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
                     </div>
+
                 </div>
-
-                <div class="form-row">
-                    <div>
-                        <label for="supplier_address">Supplier Address</label>
-                        {{ form.supplier_address(id='supplier_address') }}
-                        {% for error in form.supplier_address.errors %}
-                            <div class="field-error">{{ error }}</div>
-                        {% endfor %}
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    {{ form.submit(class="btn btn-primary px-4") }}
                 </div>
-
-                <div class="form-row">
-                    <div>
-                        <label for="book_id">Linked Book</label>
-                        {{ form.book_id(id='book_id') }}
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div>
-                        <label for="title">Book Title</label>
-                        {{ form.title(id='title') }}
-                        {% for error in form.title.errors %}
-                            <div class="field-error">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                    <div>
-                        <label for="author">Book Author</label>
-                        {{ form.author(id='author') }}
-                        {% for error in form.author.errors %}
-                            <div class="field-error">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div>
-                        <label for="quantity">Quantity</label>
-                        {{ form.quantity(id='quantity') }}
-                        {% for error in form.quantity.errors %}
-                            <div class="field-error">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <button type="submit">{{ form.submit.label.text }}</button>
             </form>
         </div>
+    </div>
+</div>
 
-        <!-- Orders List -->
-        <div class="card">
-            <h2>Existing Orders</h2>
-            {% if orders %}
-                {% for order in orders %}
-                    <div class="order-item" id="order-{{ order.id }}">
-                        <div class="order-header">
-                            <div>
-                                <span class="order-title">Order #{{ order.id }}</span>
-                                &nbsp;
-                                <span class="status-badge {{ order.status }}" id="badge-{{ order.id }}">
-                                    {{ order.status }}
-                                </span>
-                            </div>
-                            <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
-                                <span class="order-meta">{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
-                                {% if order.status == 'pending' %}
-                                    <button
-                                        class="btn-confirm"
-                                        id="btn-{{ order.id }}"
-                                        onclick="confirmDelivery({{ order.id }})">
-                                        ✓ Confirm Delivery
-                                    </button>
-                                {% endif %}
-                            </div>
-                        </div>
 
-                        <div class="supplier-info">
-                            <strong>Supplier:</strong> {{ order.supplier.name }}<br>
-                            <strong>Phone:</strong> {{ order.supplier.phone }}<br>
-                            <strong>Address:</strong> {{ order.supplier.address }}
-                        </div>
-
-                        <div class="items-info">
-                            {% if order.book %}
-                                <strong>Linked Book:</strong> {{ order.book.title }} by {{ order.book.author }}<br>
-                            {% endif %}
-                            <strong>Title:</strong> {{ order.title }}<br>
-                            <strong>Author:</strong> {{ order.author }}<br>
-                            <strong>Quantity:</strong> {{ order.quantity }}
-                        </div>
-
-                        <div class="delivery-msg" id="msg-{{ order.id }}"></div>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p class="no-orders">No orders have been created yet.</p>
-            {% endif %}
+<!-- ── Orders Table ────────────────────────────────────────────────── -->
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-semibold">All Orders</h5>
+        <div class="d-flex gap-2">
+            <input type="text" id="orderSearch" class="form-control form-control-sm" placeholder="Filter by title or supplier…" style="width:220px;">
+            <select id="statusFilter" class="form-select form-select-sm" style="width:130px;">
+                <option value="">All statuses</option>
+                <option value="pending">Pending</option>
+                <option value="delivered">Delivered</option>
+            </select>
         </div>
     </div>
 
-    <script>
-        async function confirmDelivery(orderId) {
-            const btn = document.getElementById(`btn-${orderId}`);
-            const badge = document.getElementById(`badge-${orderId}`);
-            const msg = document.getElementById(`msg-${orderId}`);
+    <div class="card-body p-0">
+        {% if orders %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="ordersTable">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-3">#</th>
+                        <th>Book</th>
+                        <th>Supplier</th>
+                        <th>Qty</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th class="pe-3">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr id="row-{{ order.id }}" data-title="{{ order.title|lower }}" data-supplier="{{ order.supplier.name|lower }}" data-status="{{ order.status }}">
+                        <td class="ps-3 text-muted small">#{{ order.id }}</td>
+                        <td>
+                            <div class="fw-semibold">{{ order.title }}</div>
+                            <small class="text-muted">by {{ order.author }}</small>
+                        </td>
+                        <td>
+                            <div>{{ order.supplier.name }}</div>
+                            <small class="text-muted">{{ order.supplier.phone }}</small>
+                        </td>
+                        <td>{{ order.quantity }}</td>
+                        <td>
+                            {% if order.status == 'delivered' %}
+                                <span class="badge bg-success-subtle text-success border border-success-subtle" id="badge-{{ order.id }}">Delivered</span>
+                            {% else %}
+                                <span class="badge bg-warning-subtle text-warning border border-warning-subtle" id="badge-{{ order.id }}">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-muted small">{{ order.created_at.strftime('%b %d, %Y') }}</td>
+                        <td class="pe-3">
+                            {% if order.status == 'pending' %}
+                                <button
+                                    class="btn btn-sm btn-outline-success"
+                                    id="btn-{{ order.id }}"
+                                    onclick="confirmDelivery({{ order.id }})">
+                                    ✓ Confirm Delivery
+                                </button>
+                            {% else %}
+                                <span class="text-muted small">—</span>
+                            {% endif %}
+                            <div class="delivery-msg small mt-1" id="msg-{{ order.id }}"></div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <div class="text-center text-muted py-5">
+                <p class="mb-2">No orders yet.</p>
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createOrderModal">Create your first order</button>
+            </div>
+        {% endif %}
+    </div>
+</div>
 
-            btn.disabled = true;
-            btn.textContent = 'Confirming...';
+<!-- Auto-open modal if there were form errors -->
+{% if form.errors %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        new bootstrap.Modal(document.getElementById('createOrderModal')).show();
+    });
+</script>
+{% endif %}
 
-            try {
-                const response = await fetch(`/orders/${orderId}/confirm-delivery`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                });
+<style>
+    .delivery-msg.success { color: #198754; font-weight: 500; }
+    .delivery-msg.error   { color: #dc3545; font-weight: 500; }
+</style>
 
-                const data = await response.json();
+<script>
+    /* ── Confirm Delivery ─────────────────────────── */
+    async function confirmDelivery(orderId) {
+        const btn   = document.getElementById(`btn-${orderId}`);
+        const badge = document.getElementById(`badge-${orderId}`);
+        const msg   = document.getElementById(`msg-${orderId}`);
+        const row   = document.getElementById(`row-${orderId}`);
 
-                if (response.ok && data.success) {
-                    // Update badge
-                    badge.textContent = 'delivered';
-                    badge.className = 'status-badge delivered';
+        btn.disabled = true;
+        btn.textContent = 'Confirming…';
 
-                    // Remove button
-                    btn.remove();
+        try {
+            const res  = await fetch(`/orders/${orderId}/confirm-delivery`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const data = await res.json();
 
-                    // Show success message
-                    msg.textContent = data.message;
-                    msg.className = 'delivery-msg success';
-                } else {
-                    // Show error, re-enable button
-                    msg.textContent = data.error || 'Something went wrong.';
-                    msg.className = 'delivery-msg error';
-                    btn.disabled = false;
-                    btn.textContent = '✓ Confirm Delivery';
-                }
-            } catch (err) {
-                msg.textContent = 'Network error. Please try again.';
-                msg.className = 'delivery-msg error';
-                btn.disabled = false;
+            if (res.ok && data.success) {
+                badge.textContent  = 'Delivered';
+                badge.className    = 'badge bg-success-subtle text-success border border-success-subtle';
+                row.dataset.status = 'delivered';
+                btn.remove();
+                msg.textContent = data.message;
+                msg.className   = 'delivery-msg success small mt-1';
+            } else {
+                msg.textContent = data.error || 'Something went wrong.';
+                msg.className   = 'delivery-msg error small mt-1';
+                btn.disabled    = false;
                 btn.textContent = '✓ Confirm Delivery';
             }
+        } catch (e) {
+            msg.textContent = 'Network error. Please try again.';
+            msg.className   = 'delivery-msg error small mt-1';
+            btn.disabled    = false;
+            btn.textContent = '✓ Confirm Delivery';
         }
-    </script>
-</body>
-</html>
+    }
+
+    /* ── Client-side filter ───────────────────────── */
+    function applyFilters() {
+        const q      = document.getElementById('orderSearch').value.toLowerCase();
+        const status = document.getElementById('statusFilter').value;
+        document.querySelectorAll('#ordersTable tbody tr').forEach(row => {
+            const matchText   = !q || row.dataset.title.includes(q) || row.dataset.supplier.includes(q);
+            const matchStatus = !status || row.dataset.status === status;
+            row.style.display = matchText && matchStatus ? '' : 'none';
+        });
+    }
+    document.getElementById('orderSearch').addEventListener('input', applyFilters);
+    document.getElementById('statusFilter').addEventListener('change', applyFilters);
+</script>
+
+{% endblock %}
