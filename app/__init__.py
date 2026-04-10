@@ -23,9 +23,11 @@ from app.routes.csv_routes import upload_bp
 from app.routes.inventory_routes import inventory_bp
 from app.routes.orders_routes import orders_bp
 from app.routes.dashboard_routes import dashboard_bp
+from app.routes.lowstocks_routes import stock_bp
 
 app.register_blueprint(books_bp)
 app.register_blueprint(upload_bp)
 app.register_blueprint(inventory_bp)
 app.register_blueprint(orders_bp)
 app.register_blueprint(dashboard_bp)
+app.register_blueprint(stock_bp)

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="container-fluid text-white" style="background-color: #1a1d27; min-height: 100vh;">
+    <h2 class="fw-bold pt-4">Low Stock Alerts</h2>
+    <p class="text-muted">Items that have fallen below their configured stock threshold.</p>
+
+    <div class="card bg-dark border-secondary mt-4">
+        <div class="card-body p-0">
+            <table class="table table-dark table-hover mb-0">
+                <thead>
+                    <tr class="text-muted small uppercase">
+                        <th class="ps-4">ITEM NAME</th>
+                        <th>QTY / THRESHOLD</th>
+                        <th>STATUS</th>
+                        <th class="text-end pe-4">ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr class="align-middle">
+                        <td class="ps-4">{{ book.title }}</td>
+                        <td>
+                            <span class="text-danger fw-bold">{{ book.quantity }}</span> 
+                            <span class="text-muted">/ 10</span>
+                        </td>
+                        <td>
+                            <span class="badge rounded-pill bg-warning text-dark">Needs Attention</span>
+                        </td>
+                        <td class="text-end pe-4">
+                            <a href="{{ url_for('books.create') }}" class="btn btn-sm btn-primary">Reorder</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-muted">
+                            All stock levels are healthy!
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
