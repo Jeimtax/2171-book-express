@@ -174,12 +174,11 @@
         <div class="book-card shadow-sm">
             <h5>{{ book.title }}</h5>
             <h6>by {{ book.author }}</h6>
+            <div class="detail"><span class="detail-key">ID</span> {{ book.id }}</div>
             <div class="detail"><span class="detail-key">Price</span> ${{ "%.2f"|format(book.price) }}</div>
             <div class="detail"><span class="detail-key">Grade</span> {{ book.grade }}</div>
             <div class="detail"><span class="detail-key">Subject</span> {{ book.subject }}</div>
-            <div class="detail"><span class="detail-key">Condition</span> {{ book.condition }}</div>
             <div class="detail"><span class="detail-key">Quantity</span> {{ book.quantity }}</div>
-
             <div class="card-actions">
                 <a href="{{ url_for('books.update', id=book.id) }}" class="btn-action btn-edit">Edit Info</a>
                 

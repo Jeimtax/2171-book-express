@@ -18,28 +18,20 @@ class InventoryManager:
         db.session.commit()
         return True
     
-    def manage_book_info(self, id, title=None, author=None, price=None, grade=None, subject=None, quantity=None):
+    
+    @staticmethod
+    def manage_book_info(id, data):
         """Allows to edit a singular or multiple attributes of a Book"""
         book = Book.query.get_or_404(id)
 
-
-        if title is not None:
-            book.title = title
-
-        if author is not None:
-            book.author = author
-
-        if price is not None:
-            book.price = price
-
-        if grade is not None:
-            book.grade = grade
-
-        if subject is not None:
-            book.subject = subject
-
-        if quantity is not None:
-            book.quantity = quantity
+        book.title = data.get('title')
+        book.author = data.get('author')
+        book.price = data.get('price')
+        book.condition = data.get('condition')
+        book.grade = data.get('grade')
+        book.subject = data.get('subject')
+        book.quantity = data.get('quantity')
+        
         db.session.commit()
         return book
 
